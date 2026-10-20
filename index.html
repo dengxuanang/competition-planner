@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能制造工程 · 竞赛与项目规划（浙师大 · 第6周）</title>
+<style>
+:root{
+  --bg:#fafbfc; --surface:#fff; --surface-2:#f6f7f9;
+  --border:#e5e7eb; --border-2:#d4d9e0;
+  --text:#111827; --text-2:#4b5563; --text-3:#8a94a3;
+  --accent:#2563eb; --accent-soft:#eff4ff;
+  --ok:#0f7b4f; --ok-soft:#e7f5ee;
+  --warn:#9a6a06; --warn-soft:#fcf3d9;
+  --info:#0b6a8f; --info-soft:#e8f3f9;
+  --danger:#c03221; --danger-soft:#fdeceb;
+  --na:#8a94a3; --na-soft:#f1f3f5;
+  --radius:10px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1024px;margin:0 auto;padding:28px 18px 72px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{margin:0;line-height:1.3}
+code{background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:0 4px;font-size:.85em}
+
+/* ---------- header ---------- */
+header.top{padding:6px 0 2px}
+header.top h1{font-size:24px;letter-spacing:.3px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:3px 12px;font-size:12.5px;color:var(--text-2)}
+.chip b{color:var(--text);font-weight:600}
+.chip.accent{background:var(--accent-soft);border-color:#cfdefc;color:#1e4fd8}
+.coord{margin:14px 0 0;font-size:13.5px;color:var(--text-2);background:var(--surface);
+  border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:8px;padding:10px 14px}
+.coord b{color:var(--text)}
+
+/* ---------- sections ---------- */
+section{margin-top:34px}
+h2{font-size:17px;display:flex;align-items:center;gap:8px}
+h2 .num{color:var(--accent);font-size:12.5px;border:1px solid #cfdefc;background:var(--accent-soft);
+  border-radius:6px;padding:1px 7px;font-weight:700}
+.sec-desc{margin:5px 0 12px;font-size:13px;color:var(--text-3)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+
+/* ---------- matrix ---------- */
+.matrix-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:12px 14px}
+table.matrix{border-collapse:collapse;width:100%;min-width:720px;font-size:12.5px}
+table.matrix th,table.matrix td{border:1px solid var(--border);padding:6px 7px;text-align:center;vertical-align:middle}
+table.matrix thead th{background:var(--surface-2);font-size:12px;font-weight:600;line-height:1.35}
+table.matrix tbody th{background:var(--surface-2);text-align:left;font-weight:600;white-space:nowrap;font-size:12px}
+.cell{display:block;border-radius:6px;font-size:11.5px;padding:3px 4px;line-height:1.25}
+.c-now{background:var(--ok-soft);color:var(--ok)}
+.c-after{background:var(--info-soft);color:var(--info)}
+.c-jinhua{background:var(--warn-soft);color:var(--warn)}
+.c-na{background:var(--na-soft);color:var(--na)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--text-3)}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-2px}
+
+/* ---------- controls ---------- */
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;margin-bottom:14px}
+.btn{border:1px solid var(--border-2);background:var(--surface);color:var(--text-2);
+  border-radius:999px;padding:4px 12px;font-size:12.5px;cursor:pointer;font-family:inherit}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.sel{border:1px solid var(--border-2);border-radius:8px;padding:5px 9px;font-size:12.5px;
+  background:var(--surface);font-family:inherit;color:var(--text)}
+.count-tip{font-size:12px;color:var(--text-3);margin-left:auto}
+
+/* ---------- item cards ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:14px;align-items:start}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.item{overflow:hidden}
+.item .hd{padding:14px 16px 12px}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.badge{font-size:11.5px;border-radius:5px;padding:1px 7px;font-weight:600;border:1px solid transparent}
+.b-app{background:#efe9fc;color:#4b2fa8;border-color:#dccff7}
+.b-ap{background:var(--accent-soft);color:#1e4fd8;border-color:#cfdefc}
+.b-a{background:#eef0f3;color:#414a57;border-color:#dde1e7}
+.b-un{background:var(--warn-soft);color:var(--warn);border-color:#eedda9}
+.b-tag{background:var(--surface);color:var(--text-3);border-color:var(--border-2);font-weight:500}
+.b-hot{background:var(--danger-soft);color:var(--danger);border-color:#f4cdc7}
+.item .name{font-size:16px;font-weight:650;line-height:1.4}
+.item .org{font-size:12px;color:var(--text-3);margin-top:3px}
+.meta-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+.stars{color:#d97706;font-size:13px;letter-spacing:1px}
+.pill{font-size:12px;font-weight:600;border-radius:6px;padding:2px 9px}
+.pill.open{background:var(--danger-soft);color:var(--danger)}
+.pill.far{background:var(--info-soft);color:var(--info)}
+.pill.closed{background:var(--surface-2);color:var(--text-3)}
+.threshold{margin-top:10px;font-size:13px;color:var(--text-2);background:var(--surface-2);border-radius:8px;padding:8px 11px}
+.threshold b{color:var(--text)}
+
+/* ---------- collapsible details ---------- */
+details{border-top:1px solid var(--border)}
+details summary{cursor:pointer;list-style:none;padding:9px 16px;font-size:13px;font-weight:600;color:var(--text-2)}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:'\25B8';color:var(--accent);margin-right:7px;display:inline-block;transition:transform .15s}
+details[open] summary::before{transform:rotate(90deg)}
+details summary:hover{color:var(--accent)}
+.det-body{padding:2px 16px 14px;font-size:13.5px;color:var(--text-2)}
+.kv em{color:var(--text);font-style:normal;font-weight:600}
+ul.tl{list-style:none;margin:0;padding:0;font-size:13px}
+ul.tl li{display:flex;gap:8px;padding:4px 0;border-bottom:1px dashed var(--border)}
+ul.tl li:last-child{border-bottom:0}
+ul.tl .d{min-width:92px;color:var(--text-3);font-variant-numeric:tabular-nums;flex-shrink:0}
+.hist{color:var(--warn);font-size:11.5px}
+.steps{list-style:none;margin:0;padding:0}
+.steps li{border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:7px;background:var(--surface-2)}
+.steps li:last-child{margin-bottom:0}
+.steps .sline{font-size:13px;font-weight:600;color:var(--text)}
+.steps .smeta{font-size:12.5px;margin-top:2px}
+.steps .smeta b{color:var(--text-3);font-weight:600}
+.pt{font-size:12px;font-weight:700;letter-spacing:.3px;margin:2px 0 8px}
+.pt.p1{color:var(--info)}
+.pt.p2{color:#4b2fa8}
+.campus,.pitfall{border-radius:0 8px 8px 0;padding:8px 12px;font-size:13px}
+.campus{border-left:3px solid var(--accent);background:var(--accent-soft);margin-bottom:8px}
+.pitfall{border-left:3px solid var(--danger);background:var(--danger-soft)}
+.srcs{font-size:12.5px;color:var(--text-3);display:flex;flex-direction:column;gap:3px;margin-top:8px}
+.levelnote{font-size:13px;color:var(--text-2)}
+
+/* ---------- gates ---------- */
+.gates{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.gate{padding:13px 15px}
+.gate h3{font-size:14px;line-height:1.45}
+.gate .g-dif{font-size:11.5px;color:var(--text-3);margin-top:3px}
+.gate .g-line{margin-top:9px;font-size:13px;color:var(--text-2)}
+.gate .g-line b{display:block;font-size:11.5px;color:var(--text-3);letter-spacing:.3px;margin-bottom:2px}
+.gate .target{margin-top:9px;padding-top:9px;border-top:1px dashed var(--border);font-size:13px;color:var(--ok);font-weight:600}
+
+/* ---------- resources ---------- */
+#resources{padding:4px 18px}
+.tl-row{display:grid;grid-template-columns:130px 1fr;gap:14px;padding:13px 0;border-top:1px solid var(--border)}
+.tl-row:first-child{border-top:0}
+@media(max-width:640px){.tl-row{grid-template-columns:1fr;gap:4px}}
+.tl-when{font-weight:600;font-size:13px;color:var(--accent)}
+.tl-when small{display:block;font-weight:400;color:var(--text-3);font-size:11.5px;margin-top:2px}
+.tl-what h4{font-size:14px}
+.tl-what p{margin:4px 0 0;font-size:13px;color:var(--text-2)}
+.act{display:inline-block;margin-top:7px;font-size:11.5px;border-radius:5px;padding:1px 8px;font-weight:600}
+.act.now{background:var(--ok-soft);color:var(--ok)}
+.act.wait{background:var(--warn-soft);color:var(--warn)}
+.act.miss{background:var(--surface-2);color:var(--text-3)}
+
+footer{margin-top:36px;font-size:12.5px;color:var(--text-3);border-top:1px solid var(--border);padding-top:16px}
+footer p{margin:4px 0}
+.empty{padding:26px;text-align:center;color:var(--text-3);font-size:13.5px}
+#toTop{position:fixed;right:16px;bottom:16px;border:1px solid var(--border-2);background:var(--surface);
+  border-radius:999px;padding:6px 13px;font-size:12.5px;cursor:pointer;color:var(--text-2);
+  box-shadow:0 1px 3px rgba(16,24,40,.08)}
+</style>
+</head>
+<body>
+
+<!-- ==========================================================================
+     CONFIG —— 所有"可修改的地方"都集中在这里。
+     ========================================================================== -->
+<script>
+/** ============================  CONFIG  ============================
+ * 想改任何东西，只需改这一段。卡片数据在下方 DATA（搜索 "const DATA"）。
+ * 注：课表按本人要求仅用于标定知识坐标，不在页面展示，此处不再保留。
+ *
+ * 1) currentWeek —— 当前教学周。每过一周手动 +1，
+ *    顶部"当前教学周"与卡片里"第 X 周可启动"等文案都会跟着变。
+ *
+ * 2) todayOverride —— 倒计时基准日。留空('')则自动取浏览器当天日期；
+ *    想做演示/排演时填 'YYYY-MM-DD'。
+ *
+ * 3) USE_LIVE_SEARCH / SEARCH_API_KEY / SEARCH_ENDPOINT —— 可选联网搜索增强。
+ *    默认 false。打开前务必知道三件事：
+ *    · CORS：浏览器直连第三方搜索 API 通常会被跨域策略拒绝；
+ *    · Key 暴露：纯静态页没有任何后端，写在这里的 Key 会被每一个访问者在
+ *      DevTools 里看到，只放"配额上限低、可随时作废"的 key；
+ *    · 这不是必需的：所有竞赛数据已经在 DATA 里静态写死，离线也完整可用。
+ *    推荐做法：用自建云函数做 SEARCH_ENDPOINT（Key 保管在服务端）。
+ * ================================================================== */
+const CONFIG = {
+  owner: '邓轩昂',
+  major: '智能制造工程',
+  school: '浙江师范大学',
+  campusPlan: '大一 杭州萧山校区 → 大二起 金华本部',
+  currentWeek: 6,
+  dataVerified: '2026-10-19',
+  todayOverride: '',
+
+  USE_LIVE_SEARCH: false,
+  SEARCH_API_KEY: '',
+  SEARCH_ENDPOINT: ''
+};
+
+/* 竞赛等级排序权重：A++ > A+ > A > 未列入/待核实 */
+const LEVEL_WEIGHT = { 'A++': 4, 'A+': 3, 'A': 2, 'UN': 1, 'NONE': 0 };
+</script>
+
+<!-- ============================  DATA  ============================ -->
+<script>
+/**
+ * DATA —— 全部内容均来自联网检索（检索日期见 CONFIG.dataVerified）。
+ * 每条数据都遵守三条规则：
+ *   ① 浙师大等级以《2024年本(专)科生A类学科竞赛赛项名单》为基准，并附来源链接；
+ *   ② 目录里有但没检索到确切等级/时间的，写"待核实"，不猜；
+ *   ③ 不在目录里的，写"未列入浙师大A类目录"。
+ *
+ * 字段说明
+ *   id / type('竞赛'|'项目') / name / organizer
+ *   level : { rank:'A++'|'A+'|'A'|'UN'|'NONE', text, note, src:[{t,u}] }
+ *   threshold : 难度门槛说明（不能用"学多少小时"糊弄）
+ *   difficulty: 1-5
+ *   eligibility: { grade, major, team, cross, campus, selection }
+ *   timeline: [{ label, date:'YYYY-MM-DD'|'', dateText, est:bool, note }]
+ *   nextCycle : 全部已截止时显示的"下一届预计 X 月"
+ *   learn : { p1:[{s,r,c}], p2:[{s,r,c}] }  技能→资源类型→可检验达标标准
+ *   campus / pitfall{text,src} / sources[{t,u}]
+ *   match  : 与"第6周知识坐标"的匹配度 0-10（用于默认排序）
+ *   skills : 技能矩阵 { c, m51, emb, cad, asm, sim } → now|after|jinhua|na
+ *   tags   : ['gongban'|'jinhua'|'now'|'beginner'...] 可自由组合
+ */
+const DATA = [
+/* =============================== 竞 赛 =============================== */
+{
+  id:'cumcm', type:'竞赛', name:'全国大学生数学建模竞赛（含浙江赛区）',
+  organizer:'主办：中国工业与应用数学学会（高教社杯）；浙师大校内组织单位：数学科学学院',
+  level:{ rank:'A++', text:'A++ — 浙师大2024年A类目录',
+    note:'目录中两条：国家级赛事"全国大学生数学建模竞赛"A++（数学科学学院）、省级赛事"全国大学生数学建模竞赛浙江赛区"A++（数学科学学院）。已核实，属实。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:4,
+  threshold:'不需要任何编程/电路/制图先修。真正门槛是"正在学的高数能不能被抽象成可求解的模型"，加上一门数值计算语言和论文写作。这是目前唯一一条你本学期课上内容就能直接兑换的训练线。',
+  eligibility:{
+    grade:'全日制在校本科生均可（研究生不可参赛）',
+    major:'不限专业；浙师大组队要求"原则上含1名数学类专业学生 + 1名其他理工科专业学生"',
+    team:'每队3人，须同一学校，不允许跨校组队',
+    cross:'鼓励跨专业、跨学院组队',
+    campus:'萧山校区同学同样可报名；但春季培训与暑期集训为线下且集中在本部',
+    selection:'真实链路：3月"同梦杯"校赛（校内横向选拔）→ 春季培训 → 6月国赛报名+暑期集训 → 集训后择优产生国赛队伍'},
+  timeline:[
+    {label:'"同梦杯"校赛报名', date:'2027-03-20', dateText:'预计3月中旬', est:true, note:'2025年：3/10–3/20报名，3/21 18:00–3/25 18:00比赛。之后各年请以数学科学学院通知为准'},
+    {label:'春季培训招募通知', date:'2027-04-18', dateText:'预计4月中下旬', est:true, note:'2025年通知于4月18日发布，面向2022–2024级（以2023级为主）'},
+    {label:'国赛报名+集训报满截止', date:'2027-06-20', dateText:'预计6月中下旬', est:true, note:'2026年为6月20日17:00截止；每队预缴300元报名费'},
+    {label:'暑期线下集训', date:'2027-07-10', dateText:'预计7–8月', est:true, note:'2026年为7/10–7/25、8/22–9/4两段线下集训'},
+    {label:'全国竞赛（72小时）', date:'2027-09-09', dateText:'预计9月中旬', est:true, note:'2026年为9/10 18:00–9/13 20:00；官方口径为"每年9月中旬某个周末，周四18:00至周日20:00"'}
+  ],
+  nextCycle:'下一届：预计 2027 年 9 月中旬；校赛在前一年 3 月就要参加',
+  learn:{
+    p1:[
+      {s:'把高数B(一)正在学的内容翻译成"可优化、可求解"的问题（极限/导数/极值/积分/微分方程初步）',
+       r:'正在上的高数课 + 一本通识教材（如《数学模型》类入门书）',
+       c:'能手推一个单变量最优化建模题：写出假设、目标函数、约束，并用已学微积分方法求出解析解'},
+      {s:'Python 或 MATLAB 数值计算入门（数组、拟合、线性规划、画图）',
+       r:'一套零基础视频/文档教程 + 每节立刻复现',
+       c:'不看教程，独立写出脚本：读入一组数据 → 拟合/插值 → 解一次线性规划 → 画出结果图并导出图片'},
+      {s:'论文排版（LaTeX 或 Word）',
+       r:'一篇国赛优秀论文作模板',
+       c:'独立排版出一篇含公式、编号图表、参考文献、附录代码的 10 页以内 PDF，且格式自洽'},
+      {s:'真题精读（近3年 A/B/C 题）',
+       r:'官网赛题 + 官方讲评/优秀论文',
+       c:'不借助资料复述一道真题的"假设—建模—求解—检验"完整链路，并指出至少两处可改进之处'}
+    ],
+    p2:[
+      {s:'三类主流模型：优化类、数据分析类、机理/微分方程类',
+       r:'数学科学学院春季培训专题 + 教材',
+       c:'拿到一个陌生问题，1小时内判断它属于哪一类，并给出"可落地求解"的方案骨架'},
+      {s:'72小时高压产出',
+       r:'暑期集训的模拟赛',
+       c:'与队友在72小时内交付完整物：论文 + 可运行代码 + 支撑材料，且无学术不端'},
+      {s:'团队分工（建模 / 编程 / 写作）',
+       r:'校赛 + 集训实战',
+       c:'能在队中独立承担一个角色并交付该角色的全部成果，不依赖队友兜底'}
+    ]},
+  campus:'萧山：本学期把"高数应用 + Python/MATLAB + 论文排版"三件事做到上面写的达标线，这条线几乎不依赖实验室。金华：转本部后第一时间参加3月同梦杯校赛（争取校赛名次），再顺接4月春季培训与7–8月暑期集训——集训集中在本部，这也是为什么现在就要把基础补完。',
+  pitfall:{text:'最常见的误判是"9月再报名就行"。浙师大不是报名即参赛：国赛队伍由暑期集训择优产生，2026年通知明确写"校赛获奖、参加过春季集训或有竞赛参赛经历者优先考虑"，且每队预缴300元报名费，"集训不合格、未成功参赛或不服从集训安排管理的队伍不予退费"。另一处容易翻车的是组队：组织方要求队伍原则上包含一名数学类专业 + 一名其他理工科专业同学，临时凑三个同专业的人很可能连队都报不上。',
+    src:'https://sxxy.zjnu.edu.cn/2026/0612/c16667a556472/page.htm'},
+  sources:[
+    {t:'浙师大数学科学学院 · 2026年全国大学生数学建模竞赛报名及培训通知',u:'https://sxxy.zjnu.edu.cn/2026/0612/c16667a556472/page.htm'},
+    {t:'浙师大 · 第二十三届"同梦杯"数学建模竞赛通知（校赛）',u:'https://sxxy.zjnu.edu.cn/2025/0314/c16667a511498/page.htm'},
+    {t:'浙师大 · 2025年数学建模竞赛春季培训通知',u:'https://sxxy.zjnu.edu.cn/2025/0418/c16667a515660/page.htm'},
+    {t:'全国大学生数学建模竞赛官网',u:'https://www.mcm.edu.cn/'},
+    {t:'浙师大2024年A类学科竞赛目录（等级依据）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}
+  ],
+  match:10, tags:['now','jinhua'],
+  skills:{c:'now',m51:'na',emb:'na',cad:'na',asm:'na',sim:'na'}
+},
+{
+  id:'lanqiao', type:'竞赛', name:'蓝桥杯全国大学生软件和信息技术大赛（单片机组 / C/C++程序设计）',
+  organizer:'主办：工业和信息化部人才交流中心（国信蓝桥承办）；浙师大校内组织单位：计算机科学与技术学院',
+  level:{ rank:'A+', text:'A+ — 浙师大2024年A类目录 第27项',
+    note:'已核实：《2024年本(专)科生A类学科竞赛赛项名单》第27项明确列出"蓝桥杯全国软件和信息技术专业人才大赛"，国家级赛事，等级 A+，校内组织单位计算机学院——不是"待核实"，也不是默认套用别校标准。注：浙江师范大学行知学院（独立学院，另有一套自编目录）在其《学科竞赛》栏目发布的目录表中把"蓝桥杯——软件类"列为 B 类；行知学院目录与本部目录并非同一体系，请以后者为准，有疑问请向所在学院教务办确认。',
+    src:[
+      {t:'浙师大本(专)科生A类学科竞赛赛项名单(2024) — 第27项',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+      {t:'浙江师范大学行知学院《学科竞赛》栏目（该学院目录将蓝桥杯软件类列为B类，仅供参考）',u:'https://www.zjxz.edu.cn/xkjs_jwb'}
+    ]},
+  difficulty:3,
+  threshold:'报名门槛极低，是唯一一个"现在就处在报名窗口内"的技术型赛事。但它的成败高度依赖自律刷题（软件赛道）或硬件外设熟练度（单片机组），不存在"报了名就能学到东西"的自动效应。本页建议：软件赛道（C/C++）走第6周起步路线，单片机组作为"补完 C 之后再接续"的第二阶段。',
+  eligibility:{
+    grade:'具有正式全日制学籍的本科生（以报名时状态为准）',
+    major:'不限专业。智能制造方向最匹配：软件赛 C/C++ 程序设计；电子赛 单片机设计与开发',
+    team:'个人赛（非组队）',
+    cross:'不涉及跨专业组队；但必须走"院校报名"，赛点不接受个人报名',
+    campus:'软件赛道纯线上/线下考点均可，不受校区限制；单片机组需要开发板，建议转到金华有实验室后',
+    selection:'三级赛制：校赛（高校自行组织，不统一发证）→ 省赛/全国选拔赛 → 全国总决赛；省赛一等奖晋级国赛'},
+  timeline:[
+    {label:'第十七届报名截止（软件赛/电子赛）', date:'2026-12-18', dateText:'2026-10-08 10:00 — 2026-12-18 14:00', est:false, note:'已核实（多校转发组委会通知，口径一致）；这是当前唯一正在进行中的报名窗口'},
+    {label:'视觉艺术设计赛/数字科技创新赛报名+作品提交截止', date:'2027-04-26', dateText:'至 2027-04-26 14:00', est:false, note:'同一通知口径'},
+    {label:'省赛 / 全国选拔赛', date:'2027-04-11', dateText:'2027年4月（参考：第十六届为2026年4月11–12日）', est:true, note:'第十七届官方写"2027年4月"，具体日期另行通知'},
+    {label:'全国总决赛', date:'2027-06-10', dateText:'2027年6月中上旬', est:true, note:'官方口径"2027年6月中上旬"'}
+  ],
+  nextCycle:'第十七届仍在报名窗口内（截止 2026-12-18 14:00）',
+  learn:{
+    p1:[
+      {s:'C语言：数组、指针、结构体、位运算、递归、字符串处理',
+       r:'一套零基础 C 语言教程 + 每节立刻复现',
+       c:'不看教程，独立写出一个"学生成绩管理系统"：结构体数组 + 文件读写 + 排序检索，能编译运行且内存无越界'},
+      {s:'基础算法：枚举、排序、二分、前缀和、简单贪心、DFS/BFS 入门',
+       r:'一本入门算法书/OJ 题库按专题刷',
+       c:'在任意 OJ 上独立 AC 20 道以上入门+基础题（不抄代码、能解释思路）'},
+      {s:'客观题知识：数电/模电/51单片机内部结构/C语言语法细节',
+       r:'近3年真题客观题 + 官方提供的选手手册',
+       c:'刷完近3年客观题并能稳定答对 70% 以上；遇到寄存器配置题能翻手册查到对应位'},
+      {s:'建立解题节奏（4小时一场，如何切题、如何放弃）',
+       r:'限时做真题',
+       c:'完成两套真题的限时模拟，交卷后能说清"哪道题本应放弃、为什么"'}
+    ],
+    p2:[
+      {s:'51单片机外设：GPIO/锁存器、定时器、中断、串口、I2C、单总线',
+       r:'一套 51 单片机视频教程（务必每个模块手敲一遍）+ 官方开发板',
+       c:'不看教程，从寄存器配置写起，交付一个完整工程：数码管动态扫描 + 状态机按键消抖 + 定时器时基 + 串口命令解析'},
+      {s:'自己的通用程序框架（按 .c/.h 分模块的可复用工程模板）',
+       r:'把每次练习沉淀成一个可复用工程模板',
+       c:'考场上前30分钟默写套用框架，剩余时间全部用于业务逻辑'},
+      {s:'至少把历年真题完整"手搓"两遍',
+       r:'历年省赛真题',
+       c:'第二遍脱离参考独立实现，且能修掉第一遍暴露的时序类缺陷（如数码管微闪、传感器读数异常）'}
+    ]},
+  campus:'萧山：现在开始只做软件赛道（C/C++）的积累，不需要任何实验室，宿舍一台电脑足够；把 C 语言与基础算法刷到上面写的达标线。金华：转本部后再买开发板、进实验室做单片机组，或继续软件赛道冲击省一（后者不受实验室限制）。',
+  pitfall:{text:'最容易踩的坑有两个，都有真实备赛复盘佐证：① "单片机组看起来门槛最低"是错觉——试卷 15 分客观题覆盖模拟电路、数字电路、单片机内部结构和 C 语言基础，零基础直接刷题效率极低，应该先把 C 语言和 51 外设补到能用再碰真题；② 照搬例程"让板子跑起来"是最典型的假性进步，复盘者明确说这种停留在"能通过"层面的做法会在遇到综合性较强的业务题时失分，正确做法是吃透每个模块的硬件底层连接逻辑并搭建自己的通用程序框架。另外两个细节：官方只考主板自带模块（扩展模块无需花时间）；蓝桥杯开发板时钟可能是 1T 而非传统 12T，直接影响延时函数写法。',
+    src:'https://qcxy.hbuas.edu.cn/info/1039/21485.htm'},
+  sources:[
+    {t:'浙江师范大学2024年A类学科竞赛目录（第27项，等级依据）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+    {t:'第十七届蓝桥杯大赛通知（报名时间口径）',u:'https://se.xjtu.edu.cn/info/1102/4008.htm'},
+    {t:'第十六届蓝桥杯省赛赛项时间表（对照参考）',u:'https://jwc.ustb.edu.cn/tztg/2512ca996a6248249300d358b4e2f325.htm'},
+    {t:'蓝桥杯大赛官网',u:'https://dasai.lanqiao.cn/'},
+    {t:'蓝桥杯单片机赛道经验分享① 学习没有捷径',u:'https://qcxy.hbuas.edu.cn/info/1039/21485.htm'},
+    {t:'蓝桥杯单片机赛道经验分享②（两届赛事的避坑与实战反思）',u:'https://qcxy.hbuas.edu.cn/info/1039/21465.htm'}
+  ],
+  match:9, tags:['gongban','now','beginner'],
+  skills:{c:'now',m51:'after',emb:'jinhua',cad:'na',asm:'na',sim:'na'}
+},
+{
+  id:'innovation', type:'竞赛', name:'中国国际大学生创新大赛（即原"互联网+"大学生创新创业大赛）',
+  organizer:'主办：教育部等12部门（2026年由南京大学、南京市人民政府承办）；浙师大校内组织单位：创业指导服务中心',
+  level:{ rank:'A++', text:'A++ — 浙师大2024年A类目录',
+    note:'目录中列名为"中国国际\'互联网+\'大学生创新创业大赛"（A++，创业指导中心）与"浙江省国际\'互联网+\'大学生创新创业大赛"（省级赛事，A++，创业中心）。教育部自2026年起文件统一使用新名"中国国际大学生创新大赛"——目录原注写明"上级部门对赛事名称进行更新的，按最新的赛事名称认定"，故同一赛事以新名参赛不影响认定。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:5,
+  threshold:'难度不在技术而在"有没有真东西可展示"。作为大一队员加入一个已有项目的技术/工程模块，门槛可以降到很低；自己当负责人则是另一回事。',
+  eligibility:{
+    grade:'全日制在校本科生（在校生以在读学籍报名）',
+    major:'不限；产业赛道等鼓励多学科组',
+    team:'学院别队规模不同，产业赛道 3–15 人',
+    cross:'鼓励跨学科、跨学院组队',
+    campus:'校内初赛由学校组织；转金华后更容易在大学科技园/砺新工坊体系内落地',
+    selection:'校级初赛 → 省级复赛 → 全国总决赛（三级赛制）'},
+  timeline:[
+    {label:'报名（2026届数据）', hist:true, date:'2026-09-25', dateText:'8月10日开放 — 9月25日12:00截止', est:false, note:'教育部教高函〔2026〕26号原文口径'},
+    {label:'省级复赛完成（2026届数据）', hist:true, date:'2026-10-25', dateText:'10月25日前', est:false, note:'逾期/延期以官网为准'},
+    {label:'全国总决赛（2026届数据）', hist:true, hist:true, date:'2026-11-30', dateText:'2026年11月', est:true, note:'官方写"总决赛（2026年11月）"'},
+    {label:'下一届预计启动', date:'2027-08-10', dateText:'预计2027年7–11月周期', est:true, note:'按2026年教育部通知周期外推，以后续官方通知为准'}
+  ],
+  nextCycle:'下一届：预计 2027 年 7–11 月周期，报名约在 8 月开启（以教育部通知为准）',
+  learn:{
+    p1:[
+      {s:'把"技术小作品"讲成"能解决问题的项目"（需求—方案—验证）',
+       r:'读3篇往届获奖项目介绍 + 跟着写一份1页版项目简介',
+       c:'把自己的一个小 demo 写成一页：解决谁的什么问题、现有方案差在哪、我做到什么程度、下一步做什么'},
+      {s:'路演表达（3分钟讲清楚一件技术的事）',
+       r:'对着同学讲、录音复盘',
+       c:'3分钟讲完且听众能复述出"问题—方案—成果"三点'},
+      {s:'初识大创/工坊体系（见页面下方"校内资源"区块）',
+       r:'教务处与创业指导服务中心通知',
+       c:'能说出学校大创申报、砺新工坊、工学院导师制各自的申报月份与入口'}
+    ],
+    p2:[
+      {s:'真实项目型技能（嵌入式原型 / 机械装置 / 软件工具，任选其一，见其它卡片）',
+       r:'依托大创项目或指导教师课题组',
+       c:'产出一个可演示的实物原型或可运行系统，并有客观指标（精度/耗时/成本）'},
+      {s:'商业/落地论证（用户访谈、成本测算）',
+       r:'学校创业指导服务中心与产业导师',
+       c:'完成10份以上真实用户访谈并写成一张成本—收益表'}
+    ]},
+  campus:'萧山：唯一可做的是"攒素材"——把每周做出来的小作品拍下来、写成一页简介，做成果留痕；正式的组队与孵化依赖本部资源。金华：进大学科技园/砺新工坊体系，找指导教师或有项目的学长加入一个技术模块，比从零自建项目性价比高得多。',
+  pitfall:{text:'这条赛道最常见的误判是"大一先自己当负责人做一个项目"。它几乎必然变成 PPT 工程——既影响 GPA，也拿不到校赛名额。真实可行的路径是先作为技术成员挂到一个已有软件+硬件的项目上（通常是高年级队伍缺一个能写代码的），把"能交付一个技术模块"作为这一年目标。',
+    src:'https://www.moe.gov.cn/srcsite/A08/s5672/202607/t20260731_1445670.html'},
+  sources:[
+    {t:'教育部 · 中国国际大学生创新大赛(2026)通知',u:'https://www.moe.gov.cn/srcsite/A08/s5672/202607/t20260731_1445670.html'},
+    {t:'全国大学生创业服务网（报名入口）',u:'https://cy.ncss.cn'},
+    {t:'浙师大2024年A类学科竞赛目录（等级依据）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}
+  ],
+  match:7, tags:['jinhua'],
+  skills:{c:'now',m51:'after',emb:'after',cad:'after',asm:'after',sim:'after'}
+},
+{
+  id:'challengecup', type:'竞赛', name:'"挑战杯"全国大学生课外学术科技作品竞赛',
+  organizer:'共青团中央等主办；浙师大校内组织单位：校团委',
+  level:{ rank:'A++', text:'A++ — 浙师大2024年A类目录',
+    note:'目录中"\'挑战杯\'全国大学生课外学术科技作品竞赛"（A++，团委）与"\'挑战杯\'中国大学生创业计划大赛"（A++，团委）为两条独立条目；省级对应条目同样为 A++（团委）。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:5,
+  threshold:'要求"学术科技作品"的实质成果：论文、专利或可验证的实物装置。这是"做完 N 个技术积累之后"的自然产物，不是大一第6周能直接冲刺的目标。',
+  eligibility:{
+    grade:'全日制在校本科生',
+    major:'不限',
+    team:'团队参赛（各校名额由校团委分配）',
+    cross:'鼓励跨学院组队',
+    campus:'校内选拔由校团委组织，通常在金华本部',
+    selection:'校级 → 省级 → 全国；校内名额有限，需通过校赛'},
+  timeline:[
+    {label:'浙师大校内选拔 / 省赛 / 国赛日期', date:'', dateText:'未核实', est:true,
+      note:'本次检索未获得浙师大2027年度该项赛事的确切日程；请以校团委与浙师大官网通知为准'}
+  ],
+  nextCycle:'下一届周期未核实 — 请关注校团委通知',
+  learn:{
+    p1:[
+      {s:'选定一个可长期做的技术方向（嵌入式 / 机构 / 算法 三选一）',
+       r:'本页其它卡片的阶段一内容',
+       c:'学期末能拿出一个能跑的最小作品（详见"学期节奏闸门"区块）'}
+    ],
+    p2:[
+      {s:'把作品升级成"可申报的成果"（论文or专利or系统）',
+       r:'指导教师 + 大创项目经费',
+       c:'产出一篇可投稿论文或一项已受理专利，或一套有第三方验证指标的系统'}
+    ]},
+  campus:'萧山：本年度不建议直接投入，先做通用技术积累。金华：依托大创项目成果或指导教师课题成果申报，此时才有"作品"可交。',
+  pitfall:{text:'最常见的误判是把"挑战杯"当成大一可以冲刺的目标。它的评审客体是已经存在的学术科技作品，缺少前置技术积累时，报名只会消耗大量时间在写申报材料上。合理定位是：它是"做完某一类积累之后"的出口，而不是起点。',
+    src:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+  sources:[
+    {t:'浙师大2024年A类学科竞赛目录（A++，团委）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+    {t:'浙江师范大学团委 / 学校官网（赛程以后续通知为准）',u:'https://www.zjnu.edu.cn/'}
+  ],
+  match:4, tags:['jinhua'],
+  skills:{c:'now',m51:'after',emb:'jinhua',cad:'after',asm:'jinhua',sim:'jinhua'}
+},
+{
+  id:'siemens', type:'竞赛', name:'"西门子杯"中国智能制造挑战赛（CIMC）',
+  organizer:'中国仿真学会与西门子(中国)有限公司联合主办；浙师大校内组织单位：工学院',
+  level:{ rank:'A+', text:'A+ — 浙师大2024年A类目录 第23项',
+    note:'目录中为国家级赛事 A+，校内组织单位明确写着"工学院"，与你的专业最对口的一条。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:4,
+  threshold:'赛项极多。面向低年级的有明确通道："智能制造通识（试）"限本专科1–2年级参加，每队限1名学生 + 1–2名指导教师；其它赛项每队1–3名学生 + 1–2名指导教师。也就是说，这是少数"大一年级身份本身就是优势"的赛道。',
+  eligibility:{
+    grade:'全日制在校本科生（研究生在部分赛项有名额限制）',
+    major:'面向自动化、机械、电气、计算机等相关学科；工学院承办，智能制造工程属于目标专业范围',
+    team:'智能制造通识（试）每队限1名学生；其余赛项每队1–3名学生 + 1–2名指导教师',
+    cross:'校内自组',
+    campus:'浙师大工学院拥有国家发改委"轨道交通、智能制造产教融合实训基地"，并与德国西门子等共建联合实验室和研发中心——这些资源在金华本部',
+    selection:'各校自行组织校赛，各赛项不进行推选、不限制进入初赛的队伍数（即：报名组队成功即可进初赛）'},
+  timeline:[
+    {label:'报名开放（2026届数据）', hist:true, date:'2026-03-01', dateText:'3月1日 开始报名', est:false, note:'第二十届官网口径'},
+    {label:'全国报名截止（2026届数据）', hist:true, date:'2026-05-31', dateText:'5月31日截止', est:false, note:'截止后不可更换、增减队员及指导教师；需先缴费方可选赛项组队'},
+    {label:'方案提交与审核（2026届数据）', hist:true, date:'2026-06-30', dateText:'6月6日–6月30日', est:false, note:'仅部分赛项需要提交方案'},
+    {label:'全国初赛（2026届数据）', hist:true, date:'2026-07-15', dateText:'7月', est:true, note:'线上评审或分赛区组织'},
+    {label:'全国总决赛（2026届数据）', date:'2026-08-15', dateText:'8月', est:true, note:'晋级名单8月初公布'},
+    {label:'下一届预计报名截止', date:'2027-05-31', dateText:'预计2027年5月31日', est:true, note:'按第二十届周期外推，以官网为准'}
+  ],
+  nextCycle:'下一届（第二十一届）：预计 2027 年 3 月开放报名、5 月 31 日截止（以官网为准）',
+  learn:{
+    p1:[
+      {s:'工业自动化通识：PLC 梯形图/工业通信/流程与离散行业基础概念',
+       r:'西门子官方学习材料 + 一套 PLC 入门教程',
+       c:'能读懂一份简单产线的 I/O 表和控制流程描述，并画出它的顺序功能图'},
+      {s:'把 C 语言能力和工业场景连起来（位操作、状态机）',
+       r:'继续阶段一的 C 语言练习，但刻意练"状态机"写法',
+       c:'用状态机重写一个多状态设备控制程序，并用测试用例证明状态迁移无遗漏'},
+      {s:'了解智能制造通识(试)赛项的往年命题形态',
+       r:'官网赛题资料专区',
+       c:'能说清该赛项考什么、多少时间、交什么形式的成果'}
+    ],
+    p2:[
+      {s:'PLC / 组态 / 运动控制 实操（进入金华实训基地后）',
+       r:'学院工程训练中心 + 西门子联合实验室',
+       c:'独立完成一个"上料—检测—分拣"小型流程的控制程序并在设备上跑通'},
+      {s:'组队与正式报名（大二下学期 3–5 月窗口）',
+       r:'官网 + 工学院竞赛负责人',
+       c:'完成缴费、组队、盖章报名表三件事，且队伍名单在截止日前不再变动'}
+    ]},
+  campus:'萧山：现在只做"通识+状态机"的软准备（这两件事不需要设备）；金华：这是校区切换收益最大的一条线——2.5亿级的国家级产教融合实训基地与西门子联合实验室都在本部，工学院也常规组织该项赛事。校区切换后请在当年3月报名窗口前就联系好指导教师。',
+  pitfall:{text:'两个来自官网参赛说明的真实坑：① 报名截止后不得更换、增减队员及指导教师，队伍一旦定下就不能补救——务必在截止日前把三人队伍名单和第一指导教师全部确认到位；② 必须先缴纳评审费才能选择赛项和组队（一般赛项 300 元/人，自由探索与 ESG 方向 900 元/队），只注册不缴费等于没报名。另外，"智能制造通识（试）"限本专科1–2年级参加，且每队只有1名学生——这是你大二时能单独报名的极少数高含金量赛道，别错过。',
+    src:'http://www.siemenscup-cimc.org.cn/joinflow'},
+  sources:[
+    {t:'浙师大2024年A类学科竞赛目录（A+，工学院）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+    {t:'"西门子杯"官网 · 2026年CIMC参赛说明（含报名时间、缴费、组队规则）',u:'http://www.siemenscup-cimc.org.cn/joinflow'},
+    {t:'浙师大工学院介绍（产教融合实训基地、西门子联合实验室）',u:'https://gxy.zjnu.edu.cn/2026/0625/c3852a577822/page.htm'}
+  ],
+  match:6, tags:['gongban','jinhua'],
+  skills:{c:'now',m51:'jinhua',emb:'jinhua',cad:'jinhua',asm:'jinhua',sim:'jinhua'}
+},
+{
+  id:'mic', type:'竞赛', name:'全国大学生机械创新设计大赛',
+  organizer:'教育部高等学校机械学科教学指导委员会主办；浙师大校内组织单位：工学院',
+  level:{ rank:'A+', text:'A+ — 浙师大2024年A类目录 第8项',
+    note:'国家级赛事 A+，校内组织单位"工学院"，符合你要求里"工学院承办优先标注"的规则。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:5,
+  threshold:'需要"三维建模 + 装配体 + 机构仿真 + 实物加工调试"完整链条，通常还要电气控制。这是本页难度最高的一条，也是对你当前坐标最不友好的一条。',
+  eligibility:{
+    grade:'在校本科生；每支参赛队不超过5名学生 + 不超过2名指导教师',
+    major:'机械类为主，鼓励机电结合',
+    team:'≤5名学生 + ≤2名指导教师',
+    cross:'校内自组，通常跨方向（机械/电控/软件）',
+    campus:'作品要实物加工与调试，依赖工程训练中心设备 → 基本只能在金华本部阶段完成',
+    selection:'校赛 → 省赛(赛区预赛) → 全国决赛三级选拔'},
+  timeline:[
+    {label:'第十二届常规赛全国决赛（已结束）', hist:true, date:'2026-07-17', dateText:'2026年7月17–20日 哈尔滨工业大学', est:false, note:'主题"灵巧·智能，美好生活"'},
+    {label:'第十二届数字孪生设计挑战赛季', hist:true, date:'2026-09-15', dateText:'2026年9月启动', est:false, note:'第5号通知：自第十二届起分为"常规赛赛季"与"数字孪生设计挑战赛赛季"两个赛季；2027赛季内容为第十二届获奖作品的数字化孪生设计与改进制作'},
+    {label:'下一届常规赛（推测第十三届）', date:'2028-05-01', dateText:'推测 2028 年（每两年一届）', est:true, note:'官方明确"每两年举办一次"；第十二届为2026年，下一届常规赛应为2028年，以组委会通知为准'}
+  ],
+  nextCycle:'下一届常规赛预计 2028 年（每两年一届）；2027 年进行的是第十二届的数字孪生挑战赛季',
+  learn:{
+    p1:[
+      {s:'三维建模基础（零件级：草图、特征、约束、尺寸标注）',
+       r:'一套 SolidWorks（或同类软件）零基础课程 + 每周临摹零件',
+       c:'不看教程，独立完成10个以上带完整特征树和工程图的零件模型'},
+      {s:'看懂机构（自由度、连杆、凸轮、齿轮传动）',
+       r:'《机械原理》类内容的入门部分 + 导论课所学的专业术语对照',
+       c:'拿到一张机构简图能算出自由度并说明它是怎么把输入运动变成输出运动的'}
+    ],
+    p2:[
+      {s:'装配体建模（配合关系、干涉检查、运动算例）',
+       r:'中等难度的现有机构逆向 + 自设题目',
+       c:'独立装配一个含15个以上零件的机构模型，通过干涉检查并导出一份爆炸视图'},
+      {s:'机构仿真基础（运动学/简单动力学）',
+       r:'软件自带仿真模块教程',
+       c:'对一个四杆机构做运动仿真并输出位移/速度曲线，能解释曲线形状'},
+      {s:'实物加工与调试（需要加工设备等）',
+       r:'金工实习 + 工程训练中心',
+       c:'做出一个能连续运行10分钟不失效的物理样机'}
+    ]},
+  campus:'萧山：只做零成本的建模练习（软件+电脑即可）。金华：加工、装配、调试三件事必须在本部工程训练中心做，所以这条线的"实物阶段"天然属于大二之后。',
+  pitfall:{text:'最容易犯的错误是按"每年一届"来理解它。它是两年一届，而且自第十二届起被拆成"常规赛赛季"和"数字孪生设计挑战赛赛季"两个错开的赛季——如果把2027年的数字孪生赛季当成"第十二届还没开始"，就会错过整整一个赛季。另一个常见错判是大一就组队：没有装配与仿真能力时，队伍里通常只能做边角工作。',
+    src:'https://12umic.hit.edu.cn/2026/0915/c20012a401561/page.htm'},
+  sources:[
+    {t:'浙师大2024年A类学科竞赛目录（A+，工学院）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+    {t:'全国大学生机械创新设计大赛官网（第5号通知：两赛季制）',u:'https://12umic.hit.edu.cn/2026/0915/c20012a401561/page.htm'},
+    {t:'大赛官网 · 赛程总览',u:'https://umic.moocollege.com/home/homepage'}
+  ],
+  match:3, tags:['gongban','jinhua'],
+  skills:{c:'na',m51:'after',emb:'after',cad:'after',asm:'jinhua',sim:'jinhua'}
+},
+{
+  id:'gcxl', type:'竞赛', name:'中国大学生工程实践与创新能力大赛（工创大赛）',
+  organizer:'教育部工程训练教学指导委员会组织实施的全国性竞赛；浙师大校内组织单位：工学院',
+  level:{ rank:'A+', text:'A+ — 浙师大2024年A类目录 第13项',
+    note:'国家级赛事 A+，校内组织单位"工学院"。每两年一届，第十届将于2027年7–8月举办。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:4,
+  threshold:'设3个赛道9个赛项（工程实践赛道：太阳能电动车、生物质能电动车；智能+工程创新赛道：智能搬运、智能分拣、智能救援；虚拟仿真赛道：飞行器设计仿真、智能网联汽车设计、工程场景数字化、企业运营仿真）。虚拟仿真赛道对没有机械/加工基础的同学相对友好。',
+  eligibility:{
+    grade:'正式注册的全日制在校本科生；部分高校校内选拔限定大二及以上（例如电子科技大学2026年通知写明"在校大二、大三年级"），浙师大工学院的年级要求以学院通知为准 — 待核实',
+    major:'不限，鼓励不同学院/专业混合组队',
+    team:'每队不超过4名学生 + 不超过2名指导教师；每人仅限参加一个赛项、一支队伍',
+    cross:'鼓励跨专业组队',
+    campus:'依赖工程训练中心的场地与设备 → 与"转金华"强相关',
+    selection:'校级初赛 → 省级复赛 → 全国总决赛三级赛制'},
+  timeline:[
+    {label:'第十届校赛窗口（多校口径）', date:'2026-12-31', dateText:'2026年12月 — 2027年1月', est:true, note:'武汉科技大学/哈工大深圳等校通知口径一致'},
+    {label:'省级复赛', date:'2027-04-15', dateText:'2027年2月—5月（各省略异）', est:true, note:'广东2–5月；湖北预计3月中旬–4月中旬；辽宁已在2026年11月完成'},
+    {label:'全国总决赛', date:'2027-07-31', dateText:'2027年7—8月', est:false, note:'第十届官方口径'}
+  ],
+  nextCycle:'第十届：2027 年 7—8 月全国总决赛；校赛通常在前一年 12 月—次年 1 月',
+  learn:{
+    p1:[
+      {s:'读懂一个赛项的命题规则并能判断"我缺哪一块"',
+       r:'官网命题规则与评分细则',
+       c:'针对"工程场景数字化"或"企业运营仿真"这类虚拟仿真赛项，能列出它要求的3项核心技能与自己当前差距'},
+      {s:'工程图与基础建模读图能力',
+       r:'与机械创新设计大赛共用同一套练习',
+       c:'能独立看懂一张装配图并复述其装配顺序'}
+    ],
+    p2:[
+      {s:'分方向练：电控（单片机/传感器）或 仿真（建模软件）',
+       r:'工程训练中心 + 指导教师',
+       c:'作为队员独立交付一个子模块（如搬运小车的循迹与抓取程序），并通过单独测试'},
+      {s:'校赛报名与组队',
+       r:'浙师大工学院/校内通知',
+       c:'在截止日前完成组队+技术方案提交（校赛多以技术方案评审形式选拔）'}
+    ]},
+  campus:'萧山：把电控方向（C语言/单片机）练到能交付子模块的水平，这是唯一可以提前做的事。金华：依托工程训练中心场地与设备组队，才能进入真实备赛；建议优先选择虚拟仿真赛道，对硬件积累要求最低。',
+  pitfall:{text:'真实坑有两个：① 部分高校的校内选拔把参赛对象限定在"大二、大三"（电子科技大学2026年校内通知就是这么写的），大一直接去报名可能被卡；浙师大工学院年级要求请以学院通知为准；② 报名一经确认，^ 到国赛结束都不能更换任何参赛人员——相比西门子杯的"报名截止后才锁定"，这里往往在进入报名系统时就锁死，组队前必须确认队友能坚持到底。',
+    src:'https://cxcy.wust.edu.cn/info/1482/12742.htm'},
+  sources:[
+    {t:'浙师大2024年A类学科竞赛目录（A+，工学院）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+    {t:'中国大学生工程实践与创新能力大赛官网',u:'http://www.gcxl.edu.cn/'},
+    {t:'武汉科技大学 · 2027年第十届省级选拔赛通知（含赛程三级安排）',u:'https://cxcy.wust.edu.cn/info/1482/12742.htm'},
+    {t:'北京工业大学 · 2027年第十届省级比赛通知（含报名/培训/预赛时间）',u:'https://jxny.bjut.edu.cn/info/1049/3318.htm'},
+    {t:'电子科技大学 · 2026年校内选拔报名通知（限定大二大三口径）',u:'https://www.smee.uestc.edu.cn/info/1107/23377.htm'}
+  ],
+  match:5, tags:['gongban','jinhua'],
+  skills:{c:'after',m51:'after',emb:'jinhua',cad:'after',asm:'jinhua',sim:'jinhua'}
+},
+{
+  id:'3dds', type:'竞赛', name:'全国三维数字化创新设计大赛（3D大赛 / 3DDS）',
+  organizer:'全国三维数字化创新设计大赛组委会 / 国家制造业信息化培训中心主办；浙师大校内组织单位：工学院',
+  level:{ rank:'A+', text:'A+ — 浙师大2024年A类目录 第22项',
+    note:'国家级赛事 A+，校内组织单位"工学院"。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:2,
+  threshold:'本页"最入门友好"的一条技术型竞赛：主要提交三维数字化作品，门槛是软件操作+作品呈现，不需要加工实物，也不需要电路。适合作为三维建模技能线的第一个出口。',
+  eligibility:{
+    grade:'在校本科生（设研究生/本科生组、高职高专组）',
+    major:'不限',
+    team:'每个参赛团队 2–3 名在校学生 + 1–2 名指导教师；每位学生只能加入1支队伍',
+    cross:'校内自组',
+    campus:'作品提交为线上（3Dshow 平台），不依赖实验室 — 萧山阶段即可尝试',
+    selection:'初赛/校赛选拔（或网络海选）→ 省/区域赛 → 全国总决赛；校内海选晋级比例约30%'},
+  timeline:[
+    {label:'第十九届 · 数字化设计与制造大赛 报名/提交', hist:true, date:'2026-08-31', dateText:'2026年6月5日 — 8月31日', est:false, note:'官网通知口径'},
+    {label:'第十九届 · 初赛（校赛）/网络海选', hist:true, date:'2026-08-31', dateText:'2026年6月—8月', est:false, note:'校赛晋级约30%'},
+    {label:'第十九届 · 省/区域赛', hist:true, date:'2026-10-25', dateText:'2026年9月—10月', est:false, note:'部分赛区线下赛在10月24–25日'},
+    {label:'下一届预计报名窗口', date:'2027-06-30', dateText:'预计2027年6月前后', est:true, note:'另有"精英联赛"通道，报名常在9月—次年3月，官网另行通知'}
+  ],
+  nextCycle:'下一届（第二十届）：预计 2027 年 6 月前后开启报名（以后续通知为准）',
+  learn:{
+    p1:[
+      {s:'三维建模基础（草图—特征—装配—工程图）',
+       r:'一套 SolidWorks/Fusion360 零基础课程 + 每周至少2个零件的临摹',
+       c:'不看教程独立建模10个以上零件，带完整特征树和工程图'},
+      {s:'渲染与作品呈现（3Dshow 专辑/视频/图文）',
+       r:'官网参赛指南与往届优秀作品',
+       c:'把一个已有模型做成一份含渲染图、爆炸图、30秒说明视频的完整作品页'}
+    ],
+    p2:[
+      {s:'装配体建模 + 运动/装配仿真',
+       r:'与机械创新设计大赛共用同一套练习',
+       c:'装配15个以上零件的机构模型，通过干涉检查，导出爆炸视图与运动动画'},
+      {s:'把一个智能制造课程知识做进作品（数字孪生/增材制造/产线数字化）',
+       r:'专业课程 + 官网专项赛说明',
+       c:'作品里能说清一条"数字化技术路线"，而不是只放一张好看的渲染图'}
+    ]},
+  campus:'萧山：这是少数不需要实验室就能真正产出参赛作品的竞赛——一台电脑装好软件就能开始，直接作为三维建模线的驱动事件。金华：转本部后可以组队参加线上线下结合的专项赛道（数字孪生、增减材复合制造等），这些赛道更贴近智能制造专业。',
+  pitfall:{text:'两个操作性坑（来自官方报名说明）：① 队长必须在报名截止前在微信小程序端完成团队成员信息与位次的修改，报名截止后系统不再允许修改；② 开放赛项要求把3D模型提前上传到"宇宙·元"平台并把链接嵌入作品页，官方建议提前一周上传（模型转换需要时间），临截止当天上传极易失败。另外，校赛/网络海选晋级比例约30%，未达基本质量线的作品不会靠"数量"堆出来。',
+    src:'https://3dds.3ddl.net/index.php?ctl=Informationlist&id=714&met=details'},
+  sources:[
+    {t:'浙师大2024年A类学科竞赛目录（A+，工学院）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+    {t:'全国3D大赛官网',u:'https://3dds.3ddl.net/'},
+    {t:'2026第19届 · 数字化设计与制造大赛通知（含赛程）',u:'https://3dds.3ddl.net/index.php?ctl=Informationlist&id=714&met=details'},
+    {t:'第19届 · 初赛报名与作品提交说明',u:'https://3dds.3ddl.net/index.php?ctl=Informationlist&id=710&met=newsdetails'}
+  ],
+  match:8, tags:['gongban','now','beginner'],
+  skills:{c:'na',m51:'na',emb:'na',cad:'now',asm:'after',sim:'after'}
+},
+{
+  id:'rm', type:'竞赛', name:'全国大学生机器人大赛 — RoboMaster（机甲大师高校联盟赛 / 超级对抗赛）',
+  organizer:'全国大学生机器人大赛组委会；浙师大校内组织单位：工学院',
+  level:{ rank:'A+', text:'A+ — 浙师大2024年A类目录 第19项',
+    note:'目录中列为"全国大学生机器人大赛-①RoboMaster、②RoboCon"，国家级赛事 A+，校内组织单位"工学院"。这是目录原表内的等级，不是学院宣传口径。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:5,
+  threshold:'融合机械工程、嵌入式系统、控制算法、电气、通信感知一体化、自主导航等。高校联盟赛（RMUL）规则难度较小、所需机器人数量较少，官方明确"适合仍处在起步阶段或新组建的队伍参加"。但对个人而言，仍然是"先有技能再谈贡献"的类型。',
+  eligibility:{
+    grade:'在校本科生（以高校为单位组队）',
+    major:'官方建议召集机械、电子、控制、软件、计算机、宣传等方向同学组成研发团队',
+    team:'战队制，每校同一项目原则上仅一支队伍拥有参赛资格，不允许联队',
+    cross:'跨学科组队，这是它的常态',
+    campus:'战队研发依赖加工/调试场地 → 金华本部为主',
+    selection:'RMUL 3V3 对抗赛无报名限制；步兵对抗赛对参加过 RMUC 2025/2026 线下比赛的队伍有限制。正式报名后还需通过技术评审节点（提交视频/图片/文档）才获得参赛资格'},
+  timeline:[
+    {label:'RMUL 2027 正式报名', date:'2026-10-30', dateText:'2026-10-20 15:00 — 2026-10-30 15:00', est:false, note:'官网当前公示口径，即将开启'},
+    {label:'RMUC 2027 正式报名', date:'2026-10-27', dateText:'2026-10-20 15:00 — 2026-10-27 15:00', est:false, note:'RMUC 报名资格有前置门槛（需通过上一赛季中期进度考核或完整形态考核排名等条件）'},
+    {label:'RMUL 2027 内地站赛', date:'2027-03-15', dateText:'2027年3月—4月', est:true, note:'预计设9个内地站点，不设海外站点'},
+    {label:'RMUC 2027 区域赛', date:'2027-05-15', dateText:'2027年5月—6月', est:true, note:''},
+    {label:'RMUC 2027 全国总决赛', date:'2027-07-15', dateText:'2027年7月—8月', est:true, note:''}
+  ],
+  nextCycle:'RMUL 2027 报名窗口 2026-10-20 15:00 开放 — 10-30 15:00 截止（不到两周）',
+  learn:{
+    p1:[
+      {s:'战队需要的"通用底子"：C 语言 + 看懂一份电路/机械图纸的能力',
+       r:'与蓝桥杯/3D大赛阶段一共享同一套练习',
+       c:'能读战队开源资料里的机械图纸与代码仓库，并跑通其中一份示例工程'},
+      {s:'了解 RoboMaster 技术栈地图（机械/电控/视觉/算法 四条线分别做什么）',
+       r:'官网《参赛手册》《机器人制作规范手册》与 bbs 规则/资料中心',
+       c:'能说清自己想加入哪条线，以及该线对大一新成员的最低交付要求'}
+    ],
+    p2:[
+      {s:'在一条线上具备可交付能力（建议：电控写线程代码 / 机械画零件图）',
+       r:'战队内部培训 + 师兄带',
+       c:'独立交付一个子任务并合入战队仓库（如一个模块的驱动代码或一个零件的设计+出图）'},
+      {s:'技术评审节点的进度提交',
+       r:'按《参赛手册》提交视频/图片/文档',
+       c:'按时通过至少两个技术评审节点，不拖战队整体进度'}
+    ]},
+  campus:'萧山：不具备组队/加工条件，正确动作是"看"——读官方规则与开源资料，确定自己要走机械/电控/视觉哪条线，并把对应的基础技能（画零件图 or 写C）练到能给战队干活的程度。金华：进战队，从子模块做起。',
+  pitfall:{text:'最常见的误判是以为"报名=能参赛"。RoboMaster 在报名之后还有若干技术评审节点（提交机器人研发进度的视频/图片/文档），未通过评审就拿不到参赛资格；而且每校同一项目原则上只有一支队伍、不允许联队——这意味着要进是通过校内战队招募，而不是自己去官网点报名。另外 RMUC（超级对抗赛）有前置资格门槛（如上赛季考核排名），新队伍应从 RMUL（高校联盟赛）切入，官方也明确说 RMUL"适合仍处在起步阶段或新组建的队伍参加"。',
+    src:'https://www.robomaster.com/zh-CN/robo/college-league'},
+  sources:[
+    {t:'浙师大2024年A类学科竞赛目录（A+，工学院）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+    {t:'RoboMaster 官网 · 机甲大师高校联盟赛 RMUL 2027（报名窗口与站赛时间）',u:'https://www.robomaster.com/zh-CN/robo/college-league'},
+    {t:'RoboMaster 官网 · 机甲大师超级对抗赛 RMUC 2027',u:'https://www.robomaster.com/zh-CN/robo/rm'}
+  ],
+  match:4, tags:['gongban','jinhua','now'],
+  skills:{c:'after',m51:'after',emb:'jinhua',cad:'jinhua',asm:'jinhua',sim:'jinhua'}
+},
+{
+  id:'ccat', type:'竞赛', name:'全国大学生先进成图技术与产品信息建模创新大赛',
+  organizer:'中国图学学会等主办；浙师大校内组织单位：工学院',
+  level:{ rank:'A+', text:'A+ — 浙师大2024年A类目录 第21项',
+    note:'国家级赛事 A+，校内组织单位"工学院"。注意：主办单位表述本次检索未逐字核实，请以当年竞赛通知为准；浙师大等级与校内组织单位来自上述目录原文。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:3,
+  threshold:'考核"读图—建模—出图"的工程制图硬功。不需要电路和加工，纯软件+规范训练即可起步，是三维建模技能线的另一个出口，且比3D大赛更偏"标准答案"式的硬技能。',
+  eligibility:{
+    grade:'在校本科生（通常在低年级就可参赛）— 具体年级要求待核实',
+    major:'机械/近机械类为主',
+    team:'团队/个人混合（具体组织形式以当年通知为准）— 待核实',
+    cross:'校内选拔为主',
+    campus:'训练以软件为主，萧山阶段即可开始；校内集训通常在金华本部',
+    selection:'校内选拔 → 省级 → 全国（以当年通知为准）'},
+  timeline:[
+    {label:'校赛 / 省赛 / 国赛时间', date:'', dateText:'未核实', est:true,
+      note:'本次检索未获得2027年度该项赛事的确切日程。请以浙师大工学院通知与竞赛官网为准'}
+  ],
+  nextCycle:'下一届：时间待核实 — 请向工学院教务办或竞赛负责人确认',
+  learn:{
+    p1:[
+      {s:'制图规范（视图表达、尺寸标注、公差与粗糙度、标题栏）',
+       r:'《工程制图》类教材 + 对照习题反复抄图',
+       c:'能从一张零件图反推三维形状，并能按规范独立出一张零件工程图'},
+      {s:'由三维到二维、由二维到三维的双向转换',
+       r:'建模软件 + 抄图练习',
+       c:'给定一张中等复杂度的零件图，能在40分钟内建出模型且尺寸全部对应'}
+    ],
+    p2:[
+      {s:'装配体表达（装配图、爆炸图、明细表）',
+       r:'与机械创新设计大赛共用练习',
+       c:'独立输出一套含装配图、明细栏的15件以上装配体图纸'},
+      {s:'校内选拔针对性训练',
+       r:'工学院往年集训资料',
+       c:'在限时条件下完成一套成图试卷并达到校内推荐水平'}
+    ]},
+  campus:'萧山：现在就可以开始抄图与建模——这是本页对设备依赖最低、又最贴近专业核心能力的竞赛准备。金华：转本部后参加校内集训与选拔赛。',
+  pitfall:{text:'这条线上的典型问题是"会画图但不懂制图规范"。不少同学能画出形状，却在视图表达、尺寸基准、公差标注上丢分，而成图类比赛评的恰恰是规范。建议一开始就对照教材规范抄图，而不是只看视频里"怎么把零件画出来"。注：本卡片的2027年度赛事日程未核实，请看本页顶部提示向工学院教务办确认。',
+    src:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+  sources:[
+    {t:'浙师大2024年A类学科竞赛目录（A+，工学院）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+    {t:'浙师大工学院官网（赛程以学院通知为准）',u:'https://gxy.zjnu.edu.cn/'}
+  ],
+  match:7, tags:['gongban','now'],
+  skills:{c:'na',m51:'na',emb:'na',cad:'now',asm:'after',sim:'after'}
+},
+{
+  id:'embedchip', type:'竞赛', name:'全国大学生嵌入式芯片与系统设计竞赛',
+  organizer:'浙师大校内组织单位：教务处',
+  level:{ rank:'A+', text:'A+ — 浙师大2024年A类目录 第43项',
+    note:'国家级赛事 A+，校内组织单位为教务处（不是工学院）。主办单位与2027年度赛程本次均未核实，请以竞赛官网与学校通知为准。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:4,
+  threshold:'需要 C 语言 + MCU/嵌入式系统 + 外设驱动能力，是"嵌入式入门"这条技能线对应的正赛。对第6周的你不友好，但对大二是合理目标。',
+  eligibility:{
+    grade:'在校本科生 — 年级要求待核实',
+    major:'电子/计算机/自动化/智能制造相关',
+    team:'团队参赛 — 人数待核实',
+    cross:'—待核实',
+    campus:'需要开发板与调试设备 → 金华本部更合适',
+    selection:'—待核实'},
+  timeline:[
+    {label:'2027年度赛程', date:'', dateText:'未核实', est:true, note:'本次检索未获得该赛事2027年度的确切报名时间。请以竞赛官网与浙师大教务处通知为准'}
+  ],
+  nextCycle:'下一届：时间待核实',
+  learn:{
+    p1:[
+      {s:'C 语言指针与结构体达到"能读别人代码的程度"',
+       r:'与蓝桥杯阶段一共享练习',
+       c:'能独立读通一份200行以上的嵌入式驱动示例代码，并指出每处位操作在改哪个寄存器'}
+    ],
+    p2:[
+      {s:'嵌入式入门：MCU 时钟树、中断向量、DMA、常见总线（UART/SPI/I2C）',
+       r:'一套 STM32/国产 MCU 教程 + 开发板',
+       c:'独立完成一个"传感器采集 + 串口上报 + 上位机显示"的最小系统'},
+      {s:'数据手册阅读能力',
+       r:'芯片原厂 Datasheet 与 Reference Manual',
+       c:'给定一颗没用过的芯片，能在手册里查到某个功能的寄存器地址与配置顺序并写通'}
+    ]},
+  campus:'萧山：只做软件侧的 C 语言准备。金华：作为蓝桥杯单片机组之后的第二条嵌入式赛道，有开发板和导师后可推进。',
+  pitfall:{text:'这条赛道的常见误判是把"能跑例程"当成"会嵌入式"。真正的分水岭是能不能读数据手册：例程覆盖不到的功能要靠手册自己配出来。建议在学习阶段就强迫自己不用例程配置一个新外设。注：本卡片的招生年级、组队人数与2027年度赛程均未核实。',
+    src:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'},
+  sources:[
+    {t:'浙师大2024年A类学科竞赛目录（A+，教务处）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}
+  ],
+  match:5, tags:['jinhua'],
+  skills:{c:'after',m51:'after',emb:'jinhua',cad:'na',asm:'na',sim:'na'}
+},
+
+/* =============================== 项 目 =============================== */
+{
+  id:'daichuang', type:'项目', name:'大学生创新创业训练计划（国创 / 省创 / 校创）',
+  organizer:'浙师大教务处 + 创业指导服务中心；国家级项目审核属教育部体系',
+  level:{ rank:'A+', text:'A+（对应：全国大学生创新创业训练计划年会展示）',
+    note:'浙师大2024年A类目录第17项：国家级赛事"全国大学生创新创业训练计划年会展示"，A+，校内组织单位 教务处。注意"立项≠获奖"：立项本身不属于竞赛获奖，只有入选"年会展示"才对应上述 A+ 条目。请向学院教务办确认你所在专业的认定口径。',
+    src:[{t:'浙师大本(专)科生A类学科竞赛赛项名单(2024)',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}]},
+  difficulty:2,
+  threshold:'门槛最低、离资源最近的一条。它的价值不在竞赛等级，而在于：它是其它所有技术竞赛的资源入口（经费、指导教师、实验场地、后续作品的归口载体）。',
+  eligibility:{
+    grade:'全日制在校本科生均可申报',
+    major:'不限',
+    team:'创新训练项目团队 3–5 人；创业训练/实践项目不超过15人。国创与省创项目须指定一名低年级学生作为第二负责人',
+    cross:'鼓励跨学院、跨专业组合',
+    campus:'申报统一在本科生创新实践管理系统线上完成；执行阶段使用实验室场地',
+    selection:'校级立项分三档：国家级（2026年拟推荐83项）/ 省级（160项）/ 校级（160项）'},
+  timeline:[
+    {label:'年度申报通知发布（2026年数据）', hist:true, date:'2026-04-01', dateText:'2026年4月1日', est:false, note:'浙师教通〔2026〕16号'},
+    {label:'系统填报（2026年数据）', hist:true, date:'2026-04-20', dateText:'4月13日—4月20日', est:false, note:'浙江师范大学本科生创新实践管理系统'},
+    {label:'学院推荐截止（2026年数据）', hist:true, date:'2026-05-13', dateText:'5月13日前', est:false, note:'并导出推荐汇总表、签字盖章'},
+    {label:'下一年度预计申报窗口', date:'2027-04-20', dateText:'预计2027年4月', est:true, note:'按往年周期外推，以教务处通知为准'}
+  ],
+  nextCycle:'下一轮申报：预计 2027 年 4 月（系统填报通常在中旬）',
+  learn:{
+    p1:[
+      {s:'选题：把一件"我想做的技术作品"写成"有研究问题和技术路线的项目"',
+       r:'读3份往年立项申请书（学校会公示）+ 联系指导教师',
+       c:'写出一页纸：研究问题 → 技术路线 → 可量化的预期成果（不是"提升能力"这类空话）'},
+      {s:'找到一个指导教师（这是整个链条的开关）',
+       r:'工学院四年一贯制导师制已为你分配的导师 + 专业课任课教师',
+       c:'能带着一页纸选题约到一次面谈，并拿到"可以先做什么"的具体建议'},
+      {s:'文献/专利检索与阅读',
+       r:'中国知网、万方、专利检索',
+       c:'围绕选题检索出10篇以上文献/专利，写成一页综述，明确指出别人做到哪、我补什么'}
+    ],
+    p2:[
+      {s:'执行与结题（论文/专利/竞赛省一等奖以上，视立项档次而定）',
+       r:'项目经费 + 实验室',
+       c:'产出符合对应档次结题要求的成果，并按标注格式署名浙江师范大学'}
+    ]},
+  campus:'萧山：现在做"选题+文献+找导师"三件完全不需要设备的事，这是第6周最该启动的动作。金华：立项后进入实验室执行；若本学期能确定选题与指导教师，转本部第一天就能开工。',
+  pitfall:{text:'两个真实门槛：① 结题成果要求被写死在通知里——国家级创新训练项目要求至少以第一作者（排名第一）身份发表三级及以上论文1篇，或获发明专利授权1项以上；省级要求至少以第一作者身份公开发表论文1篇、或获发明专利授权1项以上、或在项目期内获得与项目专业背景相关的学科竞赛省一等奖及以上奖励。大一如果没有足够的执行时间，立项后拖到结题是很常见的失败模式。② 2026年通知还规定"未结题国创、省创和新苗项目负责人不可重复申报国家级和省级项目"，以及1人最多参加两个项目。先从小项目做起比一上来冲国创稳妥。',
+    src:'https://cy.zjnu.edu.cn/2026/0401/c17623a550458/page.htm'},
+  sources:[
+    {t:'浙师大创新创业学院 · 关于申报2026年度国家级、省级和校级大学生创新创业训练计划项目的通知',u:'https://cy.zjnu.edu.cn/2026/0401/c17623a550458/page.htm'},
+    {t:'浙江师范大学本科生创新实践管理系统（申报入口）',u:'https://sjcx.zjnu.edu.cn/home/homepage'},
+    {t:'浙师大2024年A类学科竞赛目录（第17项 大创年会展示）',u:'https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm'}
+  ],
+  match:9, tags:['now','jinhua'],
+  skills:{c:'now',m51:'after',emb:'jinhua',cad:'now',asm:'after',sim:'after'}
+},
+{
+  id:'lixin', type:'项目', name:'浙师大"砺新计划 / 砺新工坊" + 工学院四年一贯制导师制（校内资源入口）',
+  organizer:'浙江师范大学（砺新计划；首批砺新工坊2026年4月授牌）；浙江师范大学工学院',
+  level:{ rank:'UN', text:'未列入浙师大A类目录（这是资源平台，不是竞赛）',
+    note:'它是"通向竞赛/项目的入口"，本身不产生竞赛等级。建议咨询工学院教务办确认它对成员的认定方式（是否折算为其它类别成果）。',
+    src:[{t:'浙江师范大学 · "砺新工坊"启动仪式暨创新创业人才培养推进会',u:'https://news.zjnu.edu.cn/2026/0430/c8449a553238/page.htm'}]},
+  difficulty:1,
+  threshold:'零门槛，但窗口感极强：首批砺新工坊已于2026年4月29日启动并完成授牌；下一批招募时间未核实。工学院的四年一贯制导师制则是从大一入学就自动生效的，立刻可用。',
+  eligibility:{
+    grade:'砺新工坊面向全校学生（各工坊招生范围以招募通知为准 — 待核实）；工学院四年一贯制导师制覆盖全部本科生',
+    major:'不限；工坊强调跨学科（首批中已出现计算机学院与工学院共建的"智能无人系统砺新工坊"）',
+    team:'工坊为单位',
+    cross:'学校明确鼓励打破学院壁垒、跨学科资源协同',
+    campus:'大学科技园（金华本部）已为入驻工坊代表颁发钥匙 → 资源集中在本部',
+    selection:'首批工坊2026-04-29授牌，已入驻大学科技园；后续批次招募时间待核实'},
+  timeline:[
+    {label:'首批砺新工坊授牌（已发生）', hist:true, date:'2026-04-29', dateText:'2026年4月29日', est:false, note:'校长邱利民授牌并向入驻大学科技园的工坊代表颁发钥匙'},
+    {label:'后续批次招募', date:'', dateText:'未核实', est:true, note:'本次检索未获得后续批次的招募窗口，请以学校/工学院通知为准'},
+    {label:'四年一贯制导师制', date:'', dateText:'大一入学起生效（当前即可用）', est:false, note:'工学院为每位本科生配备导师，覆盖新生适应、学业帮扶、就业指导'}
+  ],
+  nextCycle:'砺新工坊：等待下一批招募通知；导师制：现在就可以用',
+  learn:{
+    p1:[
+      {s:'主动建立"每周一次"的师生联系人 & 把你的进展变成可被指点的材料',
+       r:'给导师发邮件约谈（附一页纸的学习计划与本页链接）',
+       c:'本学期内至少完成两次有实质反馈的导师面谈，并把反馈落到具体计划上'},
+      {s:'摸清工坊/工作室清单与各自的进入方式',
+       r:'工学院官网 + 学长',
+       c:'能列出工学院与本部现有的创新平台清单（名称、负责人、招募方式、上次招募月份）'}
+    ],
+    p2:[
+      {s:'带着一个已成型的小作品去申请工坊/工作室位置',
+       r:'本页其它卡片的阶段一成果',
+       c:'凭作品（而不是凭热情）进入一个平台'}
+    ]},
+  campus:'萧山：唯一的动作是"联系导师 + 摸清单"，这两个动作不需要到本部就能完成。金华：转本部后第一时间申请入驻/加入工坊，此时你已经有一学期的作品积累，比空手去的同学有优势得多。',
+  pitfall:{text:'最常见的误判是等"通知发到班级群里"再行动。平台的招募信息通常在院系官网/公众号，且名额有限、多由负责人在熟悉的学生中定向邀请。由于首批已在2026年4月授牌，如果不主动跟进，很容易整学年都错过。另一个现实：大学科技园与入驻工坊都在金华本部，萧山阶段无法参与，所以现在能做的只有"主动联系 + 摸清清单"。',
+    src:'https://news.zjnu.edu.cn/2026/0430/c8449a553238/page.htm'},
+  sources:[
+    {t:'浙江师范大学 · "砺新工坊"启动仪式暨创新创业人才培养推进会',u:'https://news.zjnu.edu.cn/2026/0430/c8449a553238/page.htm'},
+    {t:'浙师大工学院 · 四年一贯制导师制 / 产教融合实训基地介绍',u:'https://gxy.zjnu.edu.cn/2026/0625/c3852a577822/page.htm'},
+    {t:'媒体报道 · 工学院以"大学生创新工作室"为孵化器组织学生参赛',u:'https://www.thepaper.cn/newsDetail_forward_8292425'}
+  ],
+  match:8, tags:['jinhua','now'],
+  skills:{c:'now',m51:'now',emb:'after',cad:'now',asm:'after',sim:'after'}
+},
+{
+  id:'openhardware', type:'项目', name:'开源硬件入门（Arduino / ESP32）自主小项目',
+  organizer:'自选（建议挂靠大创项目或指导教师课题组以获得正规出口）',
+  level:{ rank:'NONE', text:'未列入浙师大A类目录',
+    note:'不是竞赛，也不申请认定。它的作用是给"嵌入式/单片机"这条技能线提供一块可以自己承担的练兵场：低成本、反馈快、可拍照留痕，后续能喂给蓝桥杯单片机组、嵌入式大赛、挑战杯/创新大赛的作品需求。',
+    src:[]},
+  difficulty:2,
+  threshold:'是整个页面里启动成本最低的技术实践：一块开发板加一台电脑就能开始，且不受校区限制。代价是它本身不带来任何竞赛等级收益，必须"挂到某条主线上"才有意义。',
+  eligibility:{
+    grade:'不限（大一即可）',
+    major:'不限',
+    team:'1–2人（建议独自完成第一个项目，第二个开始组队）',
+    cross:'不受限',
+    campus:'完全不受校区限制 — 宿舍即可做',
+    selection:'无'},
+  timeline:[
+    {label:'随时开始', date:'', dateText:'第6周即可启动', est:false, note:'建议按"学期节奏闸门"区块的单片机线执行'}
+  ],
+  nextCycle:'无周期限制',
+  learn:{
+    p1:[
+      {s:'先 C 语言，再开发板：用 Arduino 框架练 GPIO/串口/PWM/中断',
+       r:'一套入门套件（开发板 + 面包板 + 若干传感器）+ 教程',
+       c:'不看教程，独立完成三个最小作品：呼吸灯（PWM）、按键控制计数器（中断消抖）、串口指令控制 LED 亮度'},
+      {s:'把作品记录下来（照片、接线图、代码仓库、README）',
+       r:'一个代码仓库 + 每周一条进度记录',
+       c:'每个作品都有可复现的 README：接线图 + 依赖 + 编译烧录步骤，别人照着能做出来'}
+    ],
+    p2:[
+      {s:'从 Arduino 框架过渡到寄存器/原生 SDK（ESP-IDF 或 51/STM32）',
+       r:'与蓝桥杯单片机组/嵌入式竞赛阶段二共用',
+       c:'同一个功能用两套方式各实现一次，并说清框架封装掉了哪些细节'},
+      {s:'做一个"能演示、有指标"的作品（如小型环境监测站）',
+       r:'自选题目',
+       c:'作品能连续运行一周以上，且有客观指标（采样频率、误差范围、功耗）'}
+    ]},
+  campus:'不需要校区切换：萧山宿舍里就能完成阶段一的全部内容。金华：把作品搬到实验室，配上传感器标定、机械结构与外壳，就能升级成挑战杯/创新大赛的可用作品。',
+  pitfall:{text:'最大的浪费是"永远停在点灯":  买了板子、跑通例程、然后买更多模块跑更多例程，半年后还是只会 digitalWrite。真正区分学习进度的是"脱离例程独立完成一个没做过的功能"，以及有没有把作品写成可复现的 README。另一个隐蔽坑：不挂主线。Arduino 项目如果最终不指向某个竞赛/大创，很容易变成自我感动。',
+    src:''},
+  sources:[],
+  match:8, tags:['now','beginner'],
+  skills:{c:'now',m51:'now',emb:'after',cad:'na',asm:'na',sim:'na'}
+},
+{
+  id:'tongmeng', type:'项目', name:'浙师大"同梦杯"数学建模竞赛（校内赛）+ 数学建模入门训练',
+  organizer:'浙江师范大学大学生学科竞赛组织委员会主办；数学科学学院、数学建模实验中心、数学建模研究会承办',
+  level:{ rank:'A++', text:'A++ — 作为全国大学生数学建模竞赛的校内选拔环节',
+    note:'它本身是校赛，但地位特殊：浙师大的国赛队伍就是经由校赛→春季培训→暑期集训这条链路择优产生的，因此单独列为一个"第6周就该动手"的项目。',
+    src:[{t:'浙师大 · 第二十三届"同梦杯"数学建模竞赛通知',u:'https://sxxy.zjnu.edu.cn/2025/0314/c16667a511498/page.htm'}]},
+  difficulty:3,
+  threshold:'校赛难度远低于国赛，题目二选一、比赛4天，且"各队无需指定指导教师"——这是你本学期唯一一次可以低成本、完整地跑一遍建模全流程的机会。',
+  eligibility:{
+    grade:'全校本科生以队为单位参赛',
+    major:'不限；鼓励跨专业、跨学院组队',
+    team:'每队至多3人；研究生不得参赛',
+    cross:'鼓励跨学院组队；支持个人报名后由数模中心组队',
+    campus:'线上发布通知、报名、获奖登记；培训与集训在金华本部',
+    selection:'校赛获奖者优先进入春季培训/暑期集训 → 进而择优参加国赛'},
+  timeline:[
+    {label:'校赛报名（第二十三届数据）', hist:true, date:'2025-03-20', dateText:'2025年3月10日—3月20日', est:false, note:'通过本科生实践创新管理系统报名，支持团队或个人报名'},
+    {label:'校赛比赛（第二十三届数据）', hist:true, date:'2025-03-25', dateText:'2025年3月21日18:00 — 3月25日18:00', est:false, note:'A、B 两题选做一题，4天'},
+    {label:'下一届（预计）', date:'2027-03-20', dateText:'预计2027年3月中旬', est:true, note:'以后续通知为准；第二十四届为2026年3月（已过）'}
+  ],
+  nextCycle:'下一届：预计 2027 年 3 月中旬（你在大一下学期，正好赶上）',
+  learn:{
+    p1:[
+      {s:'一次完整建模：读题 → 假设 → 建模 → 求解 → 检验 → 写论文',
+       r:'找一道往届校赛/国赛真题做限时模拟',
+       c:'在4天内（或压缩为72小时）跑完全流程，交付一篇结构完整的论文，哪怕模型很粗糙'},
+      {s:'找齐3个人并定好分工',
+       r:'同班/跨班/跨专业组队 + 数模研究会QQ群',
+       c:'三人能说清各自负责建模/编程/写作，并在一次模拟里各自交付'}
+    ],
+    p2:[
+      {s:'把队伍的工具链标准化（谁写代码、谁画图、谁排版、如何版本管理）',
+       r:'模拟赛复盘',
+       c:'建立一套队内模板（论文模板 + 代码目录结构），第二次模拟直接复用'},
+      {s:'冲校赛名次（换取春季培训与暑期集训资格）',
+       r:'数模实验中心',
+       c:'校赛获奖，或至少让组织方看到你的队伍可执行'}
+    ]},
+  campus:'萧山：现在可以做"模拟赛"这种零资源投入的事——一次完整的72小时练兵，比看十篇攻略有用。金华：2027年3月正式报名校赛；注意这是你转本部后的第一个学期，时间点非常合适。',
+  pitfall:{text:'最常见的两个错误：① 等到3月报名才开始组队，导致队伍是认识不到两周的陌生人，在4天高压里崩队；② 把"看懂别人的论文"当成"会建模"，一上手才发现连把 idea 变成可运行代码这一步都卡住。第6周能做的正是消除这两点——现在是组队的最佳时间窗。',
+    src:'https://sxxy.zjnu.edu.cn/2025/0314/c16667a511498/page.htm'},
+  sources:[
+    {t:'浙师大 · 第二十三届"同梦杯"数学建模竞赛通知',u:'https://sxxy.zjnu.edu.cn/2025/0314/c16667a511498/page.htm'},
+    {t:'浙师大 · 2025年数学建模竞赛春季培训通知',u:'https://sxxy.zjnu.edu.cn/2025/0418/c16667a515660/page.htm'},
+    {t:'浙师大 · 2026年国赛报名及暑期集训通知',u:'https://sxxy.zjnu.edu.cn/2026/0612/c16667a556472/page.htm'}
+  ],
+  match:10, tags:['now','jinhua','beginner'],
+  skills:{c:'now',m51:'na',emb:'na',cad:'na',asm:'na',sim:'na'}
+}
+];
+
+/* 技能矩阵定义（行 = 技能节点；列 = 上面的卡片） */
+const SKILL_ROWS = [
+  {k:'c',    n:'C语言基础'},
+  {k:'m51',  n:'51外设'},
+  {k:'emb',  n:'嵌入式入门'},
+  {k:'cad',  n:'三维建模基础'},
+  {k:'asm',  n:'装配体建模'},
+  {k:'sim',  n:'机构仿真基础'}
+];
+const CELLS = {
+  now:    {t:'当前可尝试',       cls:'c-now'},
+  after:  {t:'补完某技能后可尝试', cls:'c-after'},
+  jinhua: {t:'需转金华后',       cls:'c-jinhua'},
+  na:     {t:'不适用',           cls:'c-na'}
+};
+const MATRIX_COLS = ['cumcm','tongmeng','lanqiao','openhardware','3dds','ccat','siemens','gcxl','mic','rm'];
+
+/* 学期节奏闸门 */
+const GATES = [
+  { line:'C语言 → 算法线（对应：蓝桥杯软件赛 / 所有编程类底座）', difficulty:'★☆☆☆☆',
+    min:'第6–8周，每周最少完成：5道入门/基础 OJ 题 + 1个语言知识点复现小练习（如指针实现字符串处理、结构体+文件读写）。合计约15题3个小模块。',
+    floor:'期中周（约第9–11周）即使完全没空，也必须保住：每周至少做1道题 + 把本周遇到的一道错题重做一遍。目的是不断线，不是推进度。',
+    end:'学期末验收标准：能不看教程，独立写出一个"结构体数组 + 文件读写 + 排序检索"的控制台程序，且在 OJ 上独立 AC 20道以上入门/基础题。达不到这条，说明还没入门，不要急着买开发板。' },
+  { line:'单片机 / 开源硬件线（对应：蓝桥杯单片机组、嵌入式竞赛、开源硬件项目）', difficulty:'★★★☆☆',
+    min:'第6–8周，每周最少完成：先把上一条做起来，同时每周花一点时间看1个外设模块的原理（先看GPIO/锁存器，不看代码），并用纸笔画出它的硬件连接走向。',
+    floor:'期中周保底：C语言指针与位操作部分绝不中断（这是后面能不能读寄存器的前提）。开发板可以两周不开机，但不能不看C。',
+    end:'学期末验收标准：能脱离例程，从寄存器配置写起，交付一个完整工程：数码管动态扫描 + 状态机按键消抖 + 定时器时基。若只做到"跑通别人的例程"，视为未达标。' },
+  { line:'数学建模线（对应：同梦杯校赛 → 国赛）', difficulty:'★★★★☆',
+    min:'第6–8周，每周最少完成：用正在学的高数内容手动推1个小模型（如最短路/简单库存/单摆模型），并用 Python 或 MATLAB 数值求解 + 出图。同时找齐3个人组队。',
+    floor:'期中周保底：每周至少精读1道往年真题的思路（不一定要完整做），保持"问题→模型"的语感不断线。',
+    end:'学期末验收标准：三人队能在72小时内（可压缩为周末）独立完成一次完整模拟：交出一篇含假设/建模/求解/检验/参考文献的论文 + 可运行代码 + 配图。这是参加2027年3月校赛的最低入场券。' },
+  { line:'三维建模 / 制图线（对应：3D大赛、成图大赛、机械创新设计大赛）', difficulty:'★★☆☆☆',
+    min:'第6–8周，每周最少完成：临摹2个带完整特征树的零件 + 出1张符合规范的零件工程图（重点练视图表达与尺寸标注，不只是"画出形状"）。',
+    floor:'期中周保底：每周至少抄1张图（读图能力靠肌肉记忆，中断两周就会生疏）。',
+    end:'学期末验收标准：能对着一张中等复杂度的零件图在40分钟内建出尺寸完全对应的模型；累计产出10个以上带工程图的零件模型，并做成一份可提交的作品页。' },
+  { line:'科创项目 / 校内资源线（对应：大创、砺新工坊、创新大赛、挑战杯）', difficulty:'★☆☆☆☆',
+    min:'第6–8周，每周最少完成：读懂学校的一份相关通知（教务处/创业服务/工学院官网各看一眼），并完成一次"输出"——例如把一个小作品写成一页纸的项目简介。',
+    floor:'期中周保底：与导师保持每月至少一次联系，哪怕只是一封进度邮件。',
+    end:'学期末验收标准：手里有一份写好的一页纸选题（问题→技术路线→可量化预期成果）、一份10篇文献以上的综述、以及至少两次有实质反馈的导师面谈记录。带着这三样转金华，可以直接进入2027年4月的大创申报。' }
+];
+
+/* 校内资源接入时间线 */
+const RESOURCES = [
+  { when:'常年（第6周立即可用）', whenSub:'工学院 · 四年一贯制导师制',
+    h:'导师制：从大一入学起为每位本科生配备导师',
+    p:'工学院官网明确：全日制本科生从大一入学起配备导师，覆盖新生入学适应、学业帮扶、就业指导等方面。 Note 这是唯一的"当前第6周不需要等待"的资源。',
+    act:'立即行动', actCls:'now',
+    tag:'建议动作：带一页纸的学习计划约一次面谈，问三件事——① 我这个专业参加哪些竞赛最有价值 ② 我能不能进您的课题/工作室旁听 ③ 本学期应该先补哪块能力。',
+    src:[{t:'浙师大工学院 · 2026招生与导师制介绍',u:'https://gxy.zjnu.edu.cn/2026/0625/c3852a577822/page.htm'}] },
+  { when:'每年 3 月', whenSub:'2027年3月中旬预计｜以通知为准',
+    h:'"同梦杯"数学建模校赛（数学科学学院）',
+    p:'全校本科生均可参加，每队至多3人，研究生不得参赛，校赛无需指定指导教师；校赛获奖者优先进入后续培训与集训链路。上一届为2025年3月10–20日报名、3月21–25日比赛。',
+    act:'现在就组队准备', actCls:'now',
+    tag:'你在2027年3月正好处于大一下学期，时间窗口非常合适。本学期至少先跑一次72小时模拟赛，避免届时临时组队崩队。',
+    src:[{t:'浙师大 · 第二十三届"同梦杯"通知',u:'https://sxxy.zjnu.edu.cn/2025/0314/c16667a511498/page.htm'}] },
+  { when:'每年 4 月', whenSub:'2026年为4月1日发布通知',
+    h:'大学生创新创业训练计划申报（教务处 + 创业指导服务中心）',
+    p:'2026年：4月1日发通知，4月13–20日系统填报，5月13日前学院推荐。2026年拟推荐国家级83项/省级160项/校级160项。创新训练团队3–5人，国创与省创须指定一名低年级学生为第二负责人。',
+    act:'等待下一轮 + 提前备料', actCls:'wait',
+    tag:'你现在能做的：定选题、写文献综述、找导师。立项后的执行几乎全在本部，所以通常在转金华后的第一个申报窗口冲刺最合理。',
+    src:[{t:'浙师大创新创业学院 · 2026年度大创申报通知',u:'https://cy.zjnu.edu.cn/2026/0401/c17623a550458/page.htm'}] },
+  { when:'每年 4 月', whenSub:'首批 2026-04-29 已授牌',
+    h:'"砺新计划" / "砺新工坊"（校级创新创业平台）',
+    p:'2026年4月29日举行启动仪式暨创新创业人才培养推进会，校长为首批砺新工坊授牌，并向入驻大学科技园的工坊代表颁发钥匙；首批中包含"智能无人系统砺新工坊"等跨学科平台。',
+    act:'关注下一批招募', actCls:'wait',
+    tag:'首批已完成，当前第6周处于"等下一轮"位置。后续批次招募时间未核实，以校/院通知为准；大学科技园在金华本部，萧山阶段只能先摸清清单。',
+    src:[{t:'浙江师范大学 · "砺新工坊"启动仪式新闻',u:'https://news.zjnu.edu.cn/2026/0430/c8449a553238/page.htm'}] },
+  { when:'转金华后', whenSub:'实训基地与联合实验室',
+    h:'国家发改委"轨道交通、智能制造产教融合实训基地" + 西门子等联合共建实验室',
+    p:'工学院官网：实训基地面积12800平方米、总投资2.5亿元；学院与德国西门子、浙江万里扬、浙江交投、金华交投等联合共建实验室和研发中心。工学院也是"西门子杯"的校内组织单位。',
+    act:'转校区后优先接入', actCls:'wait',
+    tag:'这是你转金华之后最大的增量。所有需要设备加工/调试/组队的竞赛（西门子杯、工创大赛、机械创新设计、RoboMaster）都依赖这批资源。萧山阶段的正确策略是把"不用设备也能练"的部分先练完。',
+    src:[{t:'浙师大工学院 · 产教融合实训基地介绍',u:'https://gxy.zjnu.edu.cn/2026/0625/c3852a577822/page.htm'}] },
+  { when:'滚动', whenSub:'工作室一览',
+    h:'工学院"大学生创新工作室"体系',
+    p:'据媒体报道，学院近5年以"大学生创新工作室"为孵化器，组织学生参加世界/中国机器人大赛、中国智能制造挑战赛、全国大学生机械创新设计大赛、全国大学生电子设计竞赛等。',
+    act:'摸清单 + 用作品换位置', actCls:'now',
+    tag:'进入这类工作室通常靠已有作品或持续投入证明，而不是靠报名表。第6周起每做出一个最小作品就留痕（照片 + README + 仓库），转金华时这就是你的敲门砖。',
+    src:[{t:'澎湃 · 浙师大工学院报道（创新工作室作为孵化器）',u:'https://www.thepaper.cn/newsDetail_forward_8292425'}] }
+];
+</script>
+
+<!-- ============================  页 面 结 构  ============================ -->
+<div class="wrap">
+
+<header class="top">
+  <h1>智能制造工程 · 竞赛与项目规划</h1>
+  <div class="meta" id="metabar"></div>
+  <p class="coord" id="coord"></p>
+</header>
+
+<!-- ① 技能矩阵 -->
+<section>
+  <h2><span class="num">01</span> 技能 — 竞赛矩阵</h2>
+  <p class="sec-desc">纵轴为技能节点，横轴为竞赛/项目——一眼看出"现在会到哪一步，下一步解锁什么"。</p>
+  <div class="card matrix-wrap">
+    <table class="matrix" id="matrix"></table>
+    <div class="legend">
+      <span><i style="background:var(--ok-soft)"></i>当前可尝试</span>
+      <span><i style="background:var(--info-soft)"></i>补完某技能后可尝试</span>
+      <span><i style="background:var(--warn-soft)"></i>需转金华后</span>
+      <span><i style="background:var(--na-soft)"></i>不适用</span>
+    </div>
+  </div>
+</section>
+
+<!-- ② 卡片区 -->
+<section>
+  <h2><span class="num">02</span> 竞赛 / 项目卡片</h2>
+  <p class="sec-desc">默认按"与当前知识坐标匹配度"排序；点开卡片查看两阶段学习清单、参赛资格、时间线与来源链接。</p>
+  <div class="card controls">
+    <button class="btn on" data-filter="all">全部</button>
+    <button class="btn" data-filter="top">A++ / A+</button>
+    <button class="btn" data-filter="beginner">入门友好 ≤2★</button>
+    <button class="btn" data-filter="gongban">工学院承办</button>
+    <button class="btn" data-filter="jinhua">金华资源丰富</button>
+    <button class="btn" data-filter="now">第 6 周可启动</button>
+    <select class="sel" id="sortSel">
+      <option value="match">按匹配度</option>
+      <option value="deadline">按截止时间</option>
+      <option value="level">按等级</option>
+      <option value="difficulty">按难度</option>
+    </select>
+    <span class="count-tip" id="countTip"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty card" id="empty" hidden>没有符合当前筛选条件的条目。</div>
+</section>
+
+<!-- ③ 学期节奏闸门 -->
+<section>
+  <h2><span class="num">03</span> 学期节奏闸门</h2>
+  <p class="sec-desc">不给理想化的每日计划，每条技能线只卡住三道闸门：最小启动量 / 期中保底 / 期末验收（能否独立完成最小作品）。</p>
+  <div class="gates" id="gates"></div>
+</section>
+
+<!-- ④ 校内资源时间线 -->
+<section>
+  <h2><span class="num">04</span> 校内资源接入时间线</h2>
+  <p class="sec-desc">往年招募/选拔月份均标注来源；未核实的一律"以当年通知为准"。</p>
+  <div class="card" id="resources"></div>
+</section>
+
+<footer>
+  <p><b>数据与免责说明</b>（核实时间 2026-10-19）</p>
+  <p>· 等级基准：《浙江师范大学本(专)科生A类学科竞赛赛项名单（2024年）》<a href="https://my.zjnu.edu.cn/2023/0911/c9928a446716/page.htm" target="_blank" rel="noopener">原文</a>；目录原注："若上级部门对赛事名称进行更新的，按最新的赛事名称认定"。</p>
+  <p>· 蓝桥杯在浙师大本部 2024 目录中确为 <b>A+</b>（第 27 项，计算机学院）；行知学院（独立学院，另一套自编目录）将其软件类列为 B 类，两者非同一体系，以本部目录为准，有疑问请向学院教务办确认。</p>
+  <p>· 标注"预计"的日期均为按往年周期外推，<b>以官网最新通知为准</b>；多来源冲突已在卡片内注明差异。</p>
+  <p>· 所有"避坑提示"均来自检索到的官方条款或公开备赛复盘，未做虚构。</p>
+  <p>· 单文件静态页，可直接部署 GitHub Pages；联网增强默认关闭（见源码顶部 <code>CONFIG</code>）。</p>
+</footer>
+</div>
+<button id="toTop">↑ 顶部</button>
+
+<script>
+/* ============================  渲 染 逻 辑  ============================ */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* --- 日期工具 --- */
+function today(){
+  if(CONFIG.todayOverride && /^\d{4}-\d{2}-\d{2}$/.test(CONFIG.todayOverride)){
+    const [y,m,d]=CONFIG.todayOverride.split('-').map(Number);
+    return new Date(y,m-1,d);
+  }
+  const n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate());
+}
+function daysBetween(a,b){ return Math.round((b-a)/86400000); }
+function fmtDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+/* --- 顶部 --- */
+(function renderMeta(){
+  const t=today();
+  $('#metabar').innerHTML=[
+    '<span class="chip accent">当前教学周：<b>第 '+CONFIG.currentWeek+' 周</b>（请手动核对）</span>',
+    '<span class="chip">数据核实：<b>'+esc(CONFIG.dataVerified)+'</b></span>',
+    '<span class="chip">今日：<b>'+fmtDate(t)+'</b></span>',
+    '<span class="chip">'+esc(CONFIG.school)+' · '+esc(CONFIG.major)+'</span>',
+    '<span class="chip">'+esc(CONFIG.campusPlan)+'</span>'
+  ].join('');
+  $('#coord').innerHTML='知识坐标：第 '+CONFIG.currentWeek+' 周，目前只有<b>高数</b>与<b>专业导论</b>打底，编程 / 电路 / 制图 / 单片机均未开课，需全部自学补足。所以每条路线都回答两个问题——<b>我还缺什么</b>，以及<b>练到什么可检验的程度才算达标</b>。';
+})();
+
+/* --- 技能矩阵 --- */
+(function renderMatrix(){
+  const byId={}; DATA.forEach(d=>byId[d.id]=d);
+  const cols=MATRIX_COLS.filter(id=>byId[id]);
+  let html='<thead><tr><th style="text-align:left">技能 ↓ ／ 竞赛 →</th>';
+  cols.forEach(id=>{ html+='<th>'+esc(byId[id].name.replace(/（.*?）/g,'').slice(0,10))+'</th>'; });
+  html+='</tr></thead><tbody>';
+  SKILL_ROWS.forEach(row=>{
+    html+='<tr><th>'+esc(row.n)+'</th>';
+    cols.forEach(id=>{
+      const v=(byId[id].skills&&byId[id].skills[row.k])||'na';
+      const cell=CELLS[v]||CELLS.na;
+      html+='<td><span class="cell '+cell.cls+'">'+cell.t+'</span></td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody>';
+  $('#matrix').innerHTML=html;
+})();
+
+/* --- 倒计时 --- */
+function deadlineInfo(item){
+  const t=today();
+  /* hist:true 为往届参考数据，只用于推算周期，不作为倒计时目标 */
+  const fut=item.timeline.filter(x=>x.date && !x.hist)
+      .map(x=>({...x,_d:new Date(x.date+'T00:00:00')}))
+      .filter(x=>x._d>=t)
+      .sort((a,b)=>a._d-b._d);
+  if(fut.length){
+    const x=fut[0], n=daysBetween(t,x._d);
+    return {cls:n<=30?'open':'far', text:'距「'+x.label+'」'+n+' 天'};
+  }
+  const hasAny=item.timeline.some(x=>x.date);
+  if(!hasAny) return {cls:'far', text:item.nextCycle||'随时可开始'};
+  return {cls:'closed', text:'本届已过 → '+(item.nextCycle||'下一届待核实')};
+}
+
+/* --- 渲染单卡 --- */
+function stepList(arr){
+  return arr.map(s=>'<li><div class="sline">'+esc(s.s)+'</div>'
+    +'<div class="smeta"><b>资源：</b>'+esc(s.r)+'</div>'
+    +'<div class="smeta"><b>达标：</b>'+esc(s.c)+'</div></li>').join('');
+}
+function cardHTML(d){
+  const dl=deadlineInfo(d);
+  const rankCls={'A++':'b-app','A+':'b-ap','A':'b-a','UN':'b-un','NONE':'b-un'}[d.level.rank]||'b-un';
+  const badges=['<span class="badge '+rankCls+'">'+esc(d.level.text)+'</span>',
+    '<span class="badge b-tag">'+esc(d.type)+'</span>'];
+  if(d.tags.includes('gongban'))  badges.push('<span class="badge b-tag">工学院承办</span>');
+  if(d.tags.includes('now'))      badges.push('<span class="badge b-tag">第6周可启动</span>');
+  if(d.tags.includes('beginner')) badges.push('<span class="badge b-tag">入门友好</span>');
+  if(d.tags.includes('jinhua'))   badges.push('<span class="badge b-tag">金华资源</span>');
+  if(dl.cls==='open')             badges.push('<span class="badge b-hot">报名窗口进行中</span>');
+  const stars='★'.repeat(d.difficulty)+'☆'.repeat(5-d.difficulty);
+  const srcs=[...(d.sources||[])];
+  if(d.pitfall && d.pitfall.src) srcs.push({t:'避坑来源',u:d.pitfall.src});
+  const tl='<ul class="tl">'+d.timeline.map(x=>'<li><span class="d">'+esc(x.date||'—')+'</span><span>'
+    +(x.hist?'<span class="hist">［往届］</span> ':'')
+    +'<b>'+esc(x.label)+'</b>：'+esc(x.dateText)+(x.est?'（预计）':'')
+    +(x.note?'<br><span style="color:var(--text-3)">'+esc(x.note)+'</span>':'')
+    +'</span></li>').join('')+'</ul>';
+  const srcHTML = srcs.length
+    ? '<div class="srcs">'+srcs.map(s=>'<div>· <a href="'+esc(s.u)+'" target="_blank" rel="noopener">'+esc(s.t)+'</a></div>').join('')+'</div>'
+    : '<div class="srcs">· 自主实践项目，无外部来源；等级栏已注明"未列入浙师大A类目录"。</div>';
+  return '<article class="card item">'
+    +'<div class="hd">'
+    +  '<div class="badges">'+badges.join('')+'</div>'
+    +  '<div class="name">'+esc(d.name)+'</div>'
+    +  '<div class="org">'+esc(d.organizer)+'</div>'
+    +  '<div class="meta-row"><span class="stars">'+stars+'</span><span class="pill '+dl.cls+'">'+esc(dl.text)+'</span></div>'
+    +  '<div class="threshold"><b>门槛：</b>'+esc(d.threshold)+'</div>'
+    +'</div>'
+    +'<details><summary>我要学什么（两阶段 · 可检验达标标准）</summary><div class="det-body">'
+    +  '<div class="pt p1">阶段一 · 第 '+CONFIG.currentWeek+' 周可立即开始</div>'
+    +  '<ul class="steps">'+stepList(d.learn.p1)+'</ul>'
+    +  '<div class="pt p2" style="margin-top:10px">阶段二 · 转金华后深入</div>'
+    +  '<ul class="steps">'+stepList(d.learn.p2)+'</ul>'
+    +'</div></details>'
+    +'<details><summary>参赛资格</summary><div class="det-body kv">'
+    +  '<em>年级：</em>'+esc(d.eligibility.grade)+'<br>'
+    +  '<em>专业：</em>'+esc(d.eligibility.major)+'<br>'
+    +  '<em>组队：</em>'+esc(d.eligibility.team)+'<br>'
+    +  '<em>跨专业/跨校区：</em>'+esc(d.eligibility.cross)+'｜'+esc(d.eligibility.campus)+'<br>'
+    +  '<em>校内选拔：</em>'+esc(d.eligibility.selection)
+    +'</div></details>'
+    +'<details><summary>关键时间线（含往届参考）</summary><div class="det-body">'+tl+'</div></details>'
+    +'<details><summary>校区衔接 &amp; 避坑</summary><div class="det-body">'
+    +  '<div class="campus">'+esc(d.campus)+'</div>'
+    +  '<div class="pitfall">'+esc(d.pitfall?d.pitfall.text:'（暂无）')+'</div>'
+    +'</div></details>'
+    +'<details><summary>等级依据 &amp; 来源链接（'+srcs.length+'）</summary><div class="det-body">'
+    +  '<div class="levelnote">'+esc(d.level.note)+'</div>'
+    +  srcHTML
+    +'</div></details>'
+    +'</article>';
+}
+
+/* --- 列表状态 --- */
+let curFilter='all', curSort='match';
+function applyList(){
+  let list=DATA.slice();
+  if(curFilter==='top')           list=list.filter(d=>d.level.rank==='A++'||d.level.rank==='A+');
+  else if(curFilter==='beginner') list=list.filter(d=>d.difficulty<=2);
+  else if(curFilter==='gongban')  list=list.filter(d=>d.tags.includes('gongban'));
+  else if(curFilter==='jinhua')   list=list.filter(d=>d.tags.includes('jinhua'));
+  else if(curFilter==='now')      list=list.filter(d=>d.tags.includes('now'));
+  const t=today();
+  const nextDate=d=>{
+    const f=d.timeline.filter(x=>x.date && !x.hist)
+      .map(x=>new Date(x.date+'T00:00:00')).filter(x=>x>=t).sort((a,b)=>a-b);
+    return f.length?daysBetween(t,f[0]):99999;
+  };
+  const sorter={
+    match:(a,b)=>b.match-a.match,
+    deadline:(a,b)=>nextDate(a)-nextDate(b),
+    level:(a,b)=>(LEVEL_WEIGHT[b.level.rank]||0)-(LEVEL_WEIGHT[a.level.rank]||0),
+    difficulty:(a,b)=>a.difficulty-b.difficulty
+  }[curSort];
+  list.sort(sorter);
+  $('#grid').innerHTML=list.map(cardHTML).join('');
+  $('#empty').hidden=list.length>0;
+  $('#countTip').textContent='当前显示 '+list.length+' / '+DATA.length+' 条';
+}
+
+/* 事件 */
+$$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{
+  $$('[data-filter]').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); curFilter=b.dataset.filter; applyList();
+}));
+$('#sortSel').addEventListener('change',e=>{ curSort=e.target.value; applyList(); });
+$('#toTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+/* --- 节奏闸门 --- */
+$('#gates').innerHTML=GATES.map(g=>'<article class="card gate">'
+  +'<h3>'+esc(g.line)+'</h3>'
+  +'<div class="g-dif">难度 '+esc(g.difficulty)+'</div>'
+  +'<div class="g-line"><b>最小启动量（第6–8周 每周至少）</b>'+esc(g.min)+'</div>'
+  +'<div class="g-line"><b>保底进度（期中周不断线）</b>'+esc(g.floor)+'</div>'
+  +'<div class="g-line target">期末验收：'+esc(g.end)+'</div>'
+  +'</article>').join('');
+
+/* --- 校内资源时间线 --- */
+$('#resources').innerHTML=RESOURCES.map(r=>'<div class="tl-row">'
+  +'<div class="tl-when">'+esc(r.when)+'<small>'+esc(r.whenSub)+'</small></div>'
+  +'<div class="tl-what"><h4>'+esc(r.h)+'</h4>'
+  +'<p>'+esc(r.p)+'</p>'
+  +'<p style="color:var(--text)">'+esc(r.tag)+'</p>'
+  +'<span class="act '+r.actCls+'">'+esc(r.act)+'</span>'
+  +'<div class="srcs">'+(r.src||[]).map(s=>'<div>· <a href="'+esc(s.u)+'" target="_blank" rel="noopener">'+esc(s.t)+'</a></div>').join('')+'</div>'
+  +'</div></div>').join('');
+
+/* --- 初始渲染 --- */
+applyList();
+
+/* ==========================================================================
+   可选：联网搜索增强（默认关闭）——打开方式见 CONFIG 注释。
+   失败（CORS / Key 无效）时静默处理，不影响静态内容。
+   ======================================================================== */
+async function tryLiveSearch(){
+  if(!CONFIG.USE_LIVE_SEARCH) return;
+  if(!CONFIG.SEARCH_ENDPOINT){ console.info('[LiveSearch] 未配置 SEARCH_ENDPOINT，跳过'); return; }
+  try{
+    const url=CONFIG.SEARCH_ENDPOINT+'?q='+encodeURIComponent('浙江师范大学 学科竞赛 工学院 通知');
+    const res=await fetch(url,{headers:CONFIG.SEARCH_API_KEY?{Authorization:'Bearer '+CONFIG.SEARCH_API_KEY}:{}});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    console.info('[LiveSearch] 返回：',data);
+    const box=document.createElement('div');
+    box.className='coord';
+    box.textContent='联网增强已启用（仅补充提示，未覆盖静态数据）：'+JSON.stringify(data).slice(0,120)+' …';
+    $('.wrap').prepend(box);
+  }catch(err){
+    console.warn('[LiveSearch] 失败（CORS 或 Key 问题，属预期情况）：',err.message);
+  }
+}
+tryLiveSearch();
+</script>
+</body>
+</html>
